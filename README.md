@@ -11,8 +11,8 @@ voice commands are used for basic image editibng
 -         In Command prompt usual python execution
 
 # About Team
--Benjamin G Nechicattu
--Done Maria James
--Albin Saji
--Akash Johny Kunnath
--Suma R
+- Benjamin G Nechicattu
+- Done Maria James
+- Albin Saji
+- Akash Johny Kunnath
+- Suma R
