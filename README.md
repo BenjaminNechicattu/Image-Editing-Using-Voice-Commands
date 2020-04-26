@@ -3,6 +3,14 @@ voice commands are used for basic image editibng
 
 # Installing Packages
 -         install required packeages
+- Python
+- Tkinter
+- Pillow
+- Pygame
+- NLTK
+- IPython
+- Speech Recognition
+
 -         Packages are listed with in the program
 
 
