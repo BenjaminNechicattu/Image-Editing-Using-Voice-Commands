@@ -19,8 +19,8 @@ voice commands are used for basic image editibng
 
 
 # Running the Program
--         Just runn the elements.py
--         In Command prompt usual python execution
+1) Extract the files in a folder
+2) Execute pyhton file _elements.py_
 
 # About Team
 - Benjamin G Nechicattu
