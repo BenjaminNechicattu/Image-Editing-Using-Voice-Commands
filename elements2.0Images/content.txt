@@ -1,0 +1,11 @@
+Select your image
+	1) say file name
+	2) say open or edit
+
+
+
+colour code 
+browser inner blue #669999
+browser outer blue #30373f
+work space ash #1f1f1f
+listen rectangle #3b271b
