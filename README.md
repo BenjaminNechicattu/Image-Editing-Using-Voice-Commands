@@ -2,14 +2,20 @@
 voice commands are used for basic image editibng
 
 # Installing Packages
--         install required packeages
-- Python
 - Tkinter
+-       pip install tkinter
 - Pillow
+-       pip install pillow
 - Pygame
+-       pip install pygame
 - NLTK
+-       pip install nltk
 - IPython
+-       pip install ipython
 - Speech Recognition
+-       pip install speechrecognition
+- Pyaudio
+-       pip install pyaudio
 
 -         Packages are listed with in the program
 
