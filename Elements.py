@@ -32,6 +32,7 @@ import threading                                                                
 from tkinter import filedialog                                                                              ## imported twice, it happens cuz we are different people editing at a time
 import urllib                                                                                               ## for checking connection status
 import keyboard                                                                                             ## for simulating keyboard actions
+import math                                                                                                 ## for mathematical operations with shapes
 
 ############################################################### Class ####################################################################
 #Hover button Class 
@@ -86,14 +87,6 @@ def connection():
         quitButton.pack()
         canvasstatus.after(10000, canvasstatus.destroy)
 
-#from micClick import  listen,say_something
-label_mic_listening= Label(canvas,text=None, bg="#0d0d0d", bd="0")
-label_mic_listening.place(x="550", y="650", relwidth=".075", relheight=".09")
-label_mic_active2 = Label(canvas,text=None,bg="#0d0d0d" , fg= "white", bd=".5")
-label_mic_active2.place(x="900", y="705", relwidth=".3", relheight="0.065")
-value=None
-label_mic_active2=None
-
 #logo Button FunctionS
 def logobtn_clicked():
     
@@ -122,37 +115,235 @@ button_img_logo.place(x="10", y="650", relwidth=".05", relheight=".05")
 # check connection
 connection()
 
+# define dobally current image 
+global current_img
+current_img = None
+
+#canvas where image shows 
+canvas1 = Canvas(canvas, bg="black", bd="0", borderwidth = "0", highlightthickness = "0", cursor="plus")
+canvas1.place(x="30", y="30", relwidth="0.85", relheight="0.75")
+labelshow = Label(canvas1, bg="black", bd="0", borderwidth = "0", highlightthickness = "0",image= None)
+labelshow.pack(fill= BOTH)
+
 # calling  logobtn clicked for spalsh screen
 logobtn_clicked()
 
 # asks for import option function
 def import_options():
+    global import_win
     import_win = Toplevel(mainwin)
     import_win.title("Import image")
     import_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
     import_win.geometry("900x500+400+200")
     import_win.maxsize(900,500)
     import_win.config(bg="#1c1c1c")
-
+    
     ## Import Image / fresh start in new banner
-    prv_label=Label(import_win,fg="white",bg="#1c1c1c",text="IMPORT",font=("Courier", 35))
-    prv_label.place(x="30",y="30")
+    imp_label=Label(import_win,fg="white",bg="#1c1c1c",text="IMPORT/CREATE BOARD",font=("Courier", 35))
+    imp_label.place(x="30",y="30")
 
-    #import button import win
-    import_win_button = HoverButton(import_win,  bg = "#FF6B26", bd="0", text = "Import", compound= "left",fg ="white",width ="13", height ="2",command=lambda: import_clicked())
-    import_win_button.place(x="30", y="340")
+    ############################################## Left canvas
+    # import canvas left
+    imp_canvas = Canvas(import_win, bg="#1f1f1f", bd="0", borderwidth = "0", highlightthickness = "0")
+    imp_canvas.place(x="30", y="90", relwidth="0.23", relheight="0.72")
 
-# call for import option
+    # info label import
+    imp_det_label=Label(imp_canvas,fg="white",bg="#1f1f1f",text="Import image and \ncontinue editing \nor\nUse Canvas for fresh Start \n \nMake collages and Create", justify=LEFT)
+    imp_det_label.place(x="30",y="30")
+
+    # import button import win
+    import_win_button = HoverButton(imp_canvas,  bg = "#FF6B26", bd="0", text = "Import", compound= "left",fg ="white",width ="13", height ="2",command=lambda: import_clicked())
+    import_win_button.place(x="30", y="240")    
+
+    #fresh start button import win
+    import_win_canvas_button = HoverButton(imp_canvas,  bg = "#FF6B26", bd="0", text = "Create Board", compound= "left",fg ="white",width ="13", height ="2",command=lambda: new_board())
+    import_win_canvas_button.place(x="30", y="290")
+
+    ############################################ Right board Canvas
+    #canvas board right
+    board_canvas = Canvas(import_win, bg="#1f1f1f", bd="0", borderwidth = "0", highlightthickness = "0")
+    board_canvas.place(x="260", y="90", relwidth="0.685", relheight="0.72")
+
+    # info label board
+    imp_det_board_label=Label(board_canvas,fg="gray",bg="#1f1f1f",text="Board Settings/customise Board")
+    imp_det_board_label.place(x="20",y="10")
+
+    # info label board info paper
+    imp_det_board_paper_label=Label(board_canvas,fg="gray",bg="#1f1f1f",text="Paper Size Ratio Comparison\nSelect Paper", justify=LEFT)
+    imp_det_board_paper_label.place(x="20",y="30")
+
+    # Select Paper drop down menu
+    ## setting size for preview
+    A10 = 74.00, 105.00
+    A9 = 105.00, 147.00
+    A8 = 147.00, 210.00
+    A7 = 210.00, 298.00
+    A6 = 298*0.7, 420*0.7
+    A5 = 420*0.5, 595*0.5
+    A4 = 595*0.38, 842*0.38
+    A3 = 842*0.28, 1191*0.28
+    A2 = 1191*0.183, 1684*0.183
+    A1 = 1684*0.14, 2384*0.14
+    Square = 1000.00, 1000.00
+    Small_Square = 500.00, 500.00
+    A0 = 2384.000, 3370.000
+    A02 = 3370.000, 4768.000
+    A04 = 4768.000, 6741.000
+    Custom = None, None
+    ###(origin_x,orgin_y,width,height)
+
+    # setting up paper preview
+    # refreshes the paper size in preview
+    def refresh_size():
+        global get_colour_Box
+        global w_board
+        global h_board
+        global board_colour
+        board_colour = get_colour_Box.get("1.0","end-1c")
+        paper_set_canvas.create_rectangle(0, 0, 1000,1000,fill="black")
+        paper = var.get()
+        ws,hs=paper.split()
+        lenw = len(ws)
+        lenh = len(hs)
+        print (ws)
+        print (hs)
+        if ws == "('None'," or hs == "'None')":
+            print ("custom active")
+            custom_w = get_board_size_w.get("1.0","end-1c")
+            custom_h = get_board_size_h.get("1.0","end-1c")
+            w_board = custom_w
+            h_board = custom_h
+        else:
+            w_board = float(ws[1:lenw-1])
+            h_board = float(hs[0:lenh-1])
+        orientation = orient.get()
+        ## check orientation
+        if orientation == "landscape":
+            temp=w_board
+            w_board=h_board
+            h_board=temp
+        print (w_board, "x", h_board)
+        imp_det_board_paper_label.config(fg="white",bg="#1f1f1f",text="Paper Size Ratio Comparison\nSelect Paper : " +str(w_board) +" x" +str(h_board) , justify=LEFT)
+        paper_set_canvas.create_rectangle(0, 0, w_board,h_board, fill= board_colour)
+
+    # radio buttons for selecting paper 
+    var = StringVar()
+    A1_R=Radiobutton(board_canvas, text = "A1", variable = var, value = A1,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED,command= lambda : refresh_size())
+    A1_R.pack(side=TOP)
+    A2_R=Radiobutton(board_canvas, text = "A2", variable = var, value = A2,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A2_R.pack(side=TOP)
+    A3_R=Radiobutton(board_canvas, text = "A3", variable = var, value = A3,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A3_R.pack(side=TOP)
+    A4_R=Radiobutton(board_canvas, text = "A4", variable = var, value = A4,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A4_R.pack(side=TOP)
+    A5_R=Radiobutton(board_canvas, text = "A5", variable = var, value = A5,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A5_R.pack(side=TOP)
+    A6_R=Radiobutton(board_canvas, text = "A6", variable = var, value = A6,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A6_R.pack(side=TOP)
+    A7_R=Radiobutton(board_canvas, text = "A7", variable = var, value = A7,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A7_R.pack(side=TOP)
+    A8_R=Radiobutton(board_canvas, text = "A8", variable = var, value = A8,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A8_R.pack(side=TOP)
+    A9_R=Radiobutton(board_canvas, text = "A9", variable = var, value = A9,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A9_R.pack(side=TOP)
+    A10_R=Radiobutton(board_canvas, text = "A10", variable = var, value = A10,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    A10_R.pack(side=TOP)
+    square_R=Radiobutton(board_canvas, text = "Square", variable = var, value = Square,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    square_R.pack(side=TOP)
+    small_sq_R=Radiobutton(board_canvas, text = "Sm. Sq.", variable = var, value = Small_Square,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    small_sq_R.pack(side=TOP)
+    custom_R=Radiobutton(board_canvas, text = "Custom", variable = var, value = Custom,bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED, command= lambda : refresh_size())
+    custom_R.pack(side=TOP)
+
+    # radio button For selecting orientation // label
+    imp_det_board_orient=Label(board_canvas,fg="gray",bg="#1f1f1f",text="Change Orientation", justify=LEFT, font=("",14))
+    imp_det_board_orient.place(x="20",y="90")
+    orient = StringVar()
+    landscape_R=Radiobutton(board_canvas, text = "Landscape", variable = orient, value = "landscape",bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED,command= lambda : refresh_size())
+    landscape_R.place(x="20",y="120")
+    portrate_R=Radiobutton(board_canvas, text = "portrate", variable = orient, value = "portrate",bg="#1f1f1f",fg="white",cursor="hand1",activebackground="#1f1f1f", activeforeground="white",selectcolor="#1f1f1a",state= DISABLED,command= lambda : refresh_size())
+    portrate_R.place(x="100",y="120")
+
+    # change background colour
+    global get_colour_Box
+    imp_det_board_page_colour=Label(board_canvas,fg="gray",bg="#1f1f1f",text="Change background", justify=LEFT, font=("",14))
+    imp_det_board_page_colour.place(x="20",y="150")
+    get_colour_Box=Text(board_canvas,height=2, width=10, bg="#1a1a1a" , bd="0", fg="gray")
+    get_colour_Box.place(x="20", y="180", relwidth=".3", relheight="0.065")
+
+    # custom board Size
+    imp_board_size_label=Label(board_canvas,fg="gray",bg="#1f1f1f",text="Custom Board Size", justify=LEFT, font=("",14))
+    imp_board_size_label.place(x="20",y="210")
+    get_board_size_w=Text(board_canvas,height=2, width=10, bg="#1a1a1a" , bd="0", fg="gray")
+    get_board_size_w.place(x="20", y="240", relwidth=".1365", relheight="0.065")
+    get_board_size_h=Text(board_canvas,height=2, width=10, bg="#1a1a1a" , bd="0", fg="gray")
+    get_board_size_h.place(x="120", y="240", relwidth=".1365", relheight="0.065")
+
+    # fresh start button import win
+    apply_win_canvas_button = HoverButton(board_canvas, bg = "white", bd="0", text = "Start Board", activeforeground="white",compound= "left",fg ="gray",width ="13", height ="2",state=DISABLED,command=lambda: apply_board())
+    apply_win_canvas_button.place(x="20", y="290")
+
+    # new board function, simply a plane space where back ground can be defined, later images can be imported into
+    def new_board():
+        global paper_set_canvas
+        imp_det_board_label.config(fg="white")
+        imp_det_board_paper_label.config(fg="white")
+        # paper on canvas board
+        paper_set_canvas = Canvas(board_canvas, bg="#1f1f1f", bd="0", borderwidth = "0", highlightthickness = "0", cursor= "plus")
+        paper_set_canvas.place(x="350", y="10", relwidth="0.42", relheight="0.94")
+        paper_set_canvas.config(bg="black")
+        A1_R.config(state=ACTIVE)
+        A2_R.config(state=ACTIVE)
+        A3_R.config(state=ACTIVE)
+        A4_R.config(state=ACTIVE)
+        A5_R.config(state=ACTIVE)
+        A6_R.config(state=ACTIVE)
+        A7_R.config(state=ACTIVE)
+        A8_R.config(state=ACTIVE)
+        A9_R.config(state=ACTIVE)
+        A10_R.config(state=ACTIVE)
+        square_R.config(state=ACTIVE)
+        small_sq_R.config(state=ACTIVE)
+        custom_R.config(state=ACTIVE)
+        landscape_R.config(state=ACTIVE)
+        portrate_R.config(state=ACTIVE)
+        imp_det_board_orient.config(fg="white")
+        imp_det_board_page_colour.config(fg="white")
+        get_colour_Box.config(fg="white")
+        imp_board_size_label.config(fg="white")
+        get_board_size_h.config(fg="white")
+        get_board_size_w.config(fg="white")
+        apply_win_canvas_button.config(activebackground = "#FF6B26",bg="white",fg= "#FF6B26",activeforeground="white", bd="0", text = "Apply Board",state= ACTIVE, command=lambda: apply_board())
+
+    ## Apply
+    def apply_board():
+        global current_img
+  
+        # get board size
+        w=  int (w_board)
+        h=  int (h_board)
+        shape = [(0,0), (w,h)] 
+        
+        # creating new Image object 
+        board = Image.new("RGB", (w, h)) 
+        
+        # create rectangle image 
+        board1 = ImageDraw.Draw(board)   
+        board1.rectangle(shape, fill = board_colour) 
+
+        width, height = board.size
+        image_resized = resize_image(width, height,label_width,label_height,board)
+        board_show = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= board_show
+        labelshow.config(image= board_show)
+        current_img=board
+
+        # destroy unrequired
+        import_label.destroy()
+        import_win.destroy()
+
+# call for import option at begining
 import_options()
-
-#global Variable for currently editing image
-current_img= None
-
-#canvas where imafe shows 
-canvas1 = Canvas(canvas, bg="black", bd="0", borderwidth = "0", highlightthickness = "0", cursor="dot")
-canvas1.place(x="30", y="30", relwidth="0.85", relheight="0.75")
-labelshow = Label(canvas1, bg="black", bd="0", borderwidth = "0", highlightthickness = "0",image= None)
-labelshow.pack(fill= BOTH)
 
 #To resize image
 label_width = labelshow.winfo_screenwidth()
@@ -193,13 +384,14 @@ def import_clicked():
     labelshow.image=img_frame
     labelshow.configure(image=img_frame)
     Undo.append(current_img)
+    import_win.destroy()
     #return current_img
 
 # import button         
 img_import = Image.open(r"elements2.0Images\assets\save.png")
 img_import = img_import.resize((30,30), Image.ANTIALIAS)
 img_import1 = ImageTk.PhotoImage(img_import)
-button_import = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_import1, command = lambda : import_clicked())
+button_import = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_import1,activebackground="#FF6B26" , command = lambda : import_options())
 button_import.place(x="10", y="695", relwidth=".05", relheight=".05")
 
 #Textbox to get input from the user!!
@@ -639,7 +831,7 @@ def flip_top_clicked():
     current_img=image
     Undo.append(current_img)
     #return current_img
-
+ 
 #flip specific buttons / canvas
 def flip_clicked():
     #flip canvas
@@ -692,7 +884,7 @@ img_saturation1 = ImageTk.PhotoImage(img_saturation)
 button_saturation = HoverButton(canvastoolbar,  bg = "#0d0d0d", bd="0", image=img_saturation1, text = "Saturation", compound= "left",fg ="gray",command=lambda: saturation_clicked() )
 button_saturation.place(x="13", y="400")
 
-#Undo and Redo
+#Undo and Redo Array
 Undo=[]
 Redo=[]
 
@@ -771,7 +963,7 @@ def listenit():
     return value
 
 # keywords
-keyword_list=["brightness", "crop", "smooth", "smooth more","effect","effects","rotate","backward","embross", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast", "flip", "details", "saturation", "undo", "redo", "warmth"]
+keyword_list=["brightness", "crop","import", "smooth", "smooth more","effect","effects","rotate","backward","embross", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast", "flip", "details", "saturation", "undo", "redo", "warmth"]
 
 #mic function 
 #voice function
@@ -850,7 +1042,15 @@ def mic_activate():
                     redo_clicked()
                     Save = i
                     print(i)
-                    #break   
+                    #break  
+                elif i=="create" or i=="new":
+                    import_options()
+                    print(i)
+                    #break 
+                elif i=="import":
+                    import_clicked()
+                    print(i)
+                    #break 
                 elif i=="quit" or i=="exit":
                     Quit=i
                     print(i)
@@ -866,7 +1066,7 @@ def mic_activate():
 img_mic = Image.open(r"elements2.0Images\assets\mic.png")
 img_mic = img_mic.resize((66,72), Image.ANTIALIAS)
 img_mic1 = ImageTk.PhotoImage(img_mic)
-button_mic = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_mic1, activebackground='#0d0d0d' ,command =  lambda: mic_activate())
+button_mic = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_mic1, activebackground='#0d0d0d',cursor="hand2" ,command =  lambda: mic_activate())
 button_mic.place(x="550", y="700", relwidth=".075", relheight=".09")
 
 ############################################################ Play Button #################################################################
@@ -956,7 +1156,7 @@ def save():
     global current_img
     if current_img == None :                                                                                     ## if tried to save without importing image
         #print("check") #debug
-        import_label.config(text="Import Image First")
+        import_label.config(text="Import Image First Or Create Board")
 
     else:                                                                                                        ## Else if image imported and editted open save window
         save_win = Toplevel(mainwin)
@@ -1173,7 +1373,7 @@ def save():
 img_save = Image.open(r"elements2.0Images\assets\save.png")
 img_save = img_save.resize((30,30), Image.ANTIALIAS)
 img_save1 = ImageTk.PhotoImage(img_save)
-button_save = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_save1, command =lambda: save())
+button_save = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_save1,activebackground="green", command =lambda: save())
 button_save.place(x="10", y="740", relwidth=".05", relheight=".05")
 
 # closing Confirmation
@@ -1205,7 +1405,7 @@ mainwin.mainloop()
     histogram
 """
 
-######################################################## Here By Elements Version 2.0 is Finished ##############14_April_2020###############################
+######################################################## Here By Elements Version 2.0 is Finished ############## 14_April_2020 #############################
 
 ######################################################## Next Version Elements Version 2.1 aapproved for development #######################################
 
