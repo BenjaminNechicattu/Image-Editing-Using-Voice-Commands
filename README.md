@@ -1,4 +1,4 @@
-# Image-Manipulation-over-voice-commands
+# Image-Manipulation-over-Voice-Commands
 voice commands are used for basic image editing. We call it Elements. Elements is capable of Edit images all over voice commands.
 
 # Installing Packages
