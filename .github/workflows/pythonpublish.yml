@@ -1,0 +1,31 @@
+# This workflows will upload a Python Package using Twine when a release is created
+# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+
+name: Elements.py
+
+on:
+  release:
+    types: [ver 2.2.1]
+
+jobs:
+  deploy:
+
+    runs-on: windows10
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Elements.py
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.8'
+    - name: speechrecognition, nltk, pillow, keyboard, threading, tkinter, pygame, ipython, pyaudio, keyboard, pocketsphinx
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
