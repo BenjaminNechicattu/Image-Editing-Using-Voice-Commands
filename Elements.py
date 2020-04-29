@@ -33,6 +33,7 @@ from tkinter import filedialog                                                  
 import urllib                                                                                               ## for checking connection status
 import keyboard                                                                                             ## for simulating keyboard actions
 import math                                                                                                 ## for mathematical operations with shapes
+from pocketsphinx import LiveSpeech                                                                         ## pocketsphinx lib for offline voice detection
 
 ############################################################### Class ####################################################################
 #Hover button Class 
@@ -64,7 +65,10 @@ canvas = tkinter.Canvas(mainwin, width = 1200, height =800 ,bg="#0d0d0d", bd="0"
 canvas.pack()
 
 #check connection Status
+first_time = True
 def connection():
+    global first_time
+    global internet_access
     canvasstatus = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
     canvasstatus.place(x="900", y="734", relwidth="0.3", relheight="0.45")
     #check status
@@ -72,20 +76,27 @@ def connection():
     try:
         urllib.request.urlopen(host)
         print("connected")
-        connectionLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="Connection Established")
-        connectionLabel.pack()
-        closingLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="voice enabled")
-        closingLabel.pack()
-        canvasstatus.after(10000, canvasstatus.destroy)
+        if first_time == True:
+            connectionLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="Connection Established")
+            connectionLabel.pack()
+            closingLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="voice enabled")
+            closingLabel.pack()
+            canvasstatus.after(10000, canvasstatus.destroy)
+            first_time = False
+        internet_access = True
+
     except:
         print("not_connected")
-        connectionLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="NoConnection Err: 404")
-        connectionLabel.pack()
-        closingLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="quit to close/ continue without voice")
-        closingLabel.pack()
-        quitButton=Button(canvasstatus,bg="#0d0d0d",fg="white",text="Quit",command=lambda: mainwin.destroy())
-        quitButton.pack()
-        canvasstatus.after(10000, canvasstatus.destroy)
+        if first_time == True:
+            connectionLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="NoConnection Err: 404")
+            connectionLabel.pack()
+            closingLabel=Label(canvasstatus,bg="#0d0d0d",fg="white",text="quit to close/ continue without voice")
+            closingLabel.pack()
+            quitButton=Button(canvasstatus,bg="#0d0d0d",fg="white",text="Quit",command=lambda: mainwin.destroy())
+            quitButton.pack()
+            canvasstatus.after(10000, canvasstatus.destroy)
+            first_time = False
+        internet_access = False
 
 #logo Button FunctionS
 def logobtn_clicked():
@@ -137,6 +148,7 @@ def import_options():
     import_win.geometry("900x500+400+200")
     import_win.maxsize(900,500)
     import_win.config(bg="#1c1c1c")
+    import_win.grab_set()                                                                                                   ## prevent duplication of same window and block main window
     
     ## Import Image / fresh start in new banner
     imp_label=Label(import_win,fg="white",bg="#1c1c1c",text="IMPORT/CREATE BOARD",font=("Courier", 35))
@@ -542,6 +554,7 @@ def crop_clicked():
     lower = height - upper
     print (lower)
     #print("New size of image is", width, height)
+    print("on progress")
 
     area = (left, upper, right, lower) 
     image = current_img.crop(area)  
@@ -774,7 +787,7 @@ button_filter.place(x="15", y="200")
 
 #add Text button
 def addtext_clicked():
-    print("error")
+    print("on progress")
     
 #add text function
 img_addtext = Image.open(r"elements2.0Images\assets\addtext.png")
@@ -800,7 +813,7 @@ def contrast_clicked():
     #return current_img
 
 #contrast button
-img_contrast = Image.open(r"elements2.0Images\assets\contrast.png")
+img_contrast = Image.open(r"elements2.0Images\contrast.png")
 img_contrast = img_contrast.resize((35,35), Image.ANTIALIAS)
 img_contrast1 = ImageTk.PhotoImage(img_contrast)
 button_contrast = HoverButton(canvastoolbar,  bg = "#0d0d0d", bd="0", image=img_contrast1, text = "Contrast", compound= "left",fg ="gray",command=lambda: contrast_clicked())
@@ -839,7 +852,7 @@ def flip_clicked():
     canvasflip.place(x="950", y="380", relwidth="0.123", relheight="0.1")
     canvasflip.after(2000, canvasflip.destroy)
     #flip rigth - left button
-    flipright = Image.open(r"elements2.0Images\assets\undo.png")
+    flipright = Image.open(r"elements2.0Images\undo.png")
     flipright = flipright.resize((40,40), Image.ANTIALIAS)
     flipright1 = ImageTk.PhotoImage(flipright)
     flipright1.image=flipright1
@@ -847,7 +860,7 @@ def flip_clicked():
     button_flipright.place(x="30", y="0")
 
     #flip top- botton
-    fliptop = Image.open(r"elements2.0Images\assets\redo.png")
+    fliptop = Image.open(r"elements2.0Images\redo.png")
     fliptop = fliptop.resize((40,40), Image.ANTIALIAS)
     fliptop1 = ImageTk.PhotoImage(fliptop)
     fliptop1.image=fliptop1
@@ -855,7 +868,7 @@ def flip_clicked():
     button_fliptop.place(x="30", y="40")
 
 #flip button
-img_flip = Image.open(r"elements2.0Images\assets\flip.png")
+img_flip = Image.open(r"elements2.0Images\flip.png")
 img_flip = img_flip.resize((35,35), Image.ANTIALIAS)
 img_flip1 = ImageTk.PhotoImage(img_flip)
 button_flip = HoverButton(canvastoolbar,  bg = "#0d0d0d", bd="0", image=img_flip1, text = "Flip", compound= "left",fg ="gray",command=lambda: flip_clicked())
@@ -878,7 +891,7 @@ def saturation_clicked():
     #return current_img
 
 #Saturation button
-img_saturation = Image.open(r"elements2.0Images\assets\saturation.png")
+img_saturation = Image.open(r"elements2.0Images\saturation.png")
 img_saturation = img_saturation.resize((37,37), Image.ANTIALIAS)
 img_saturation1 = ImageTk.PhotoImage(img_saturation)
 button_saturation = HoverButton(canvastoolbar,  bg = "#0d0d0d", bd="0", image=img_saturation1, text = "Saturation", compound= "left",fg ="gray",command=lambda: saturation_clicked() )
@@ -912,7 +925,7 @@ def undo_clicked():
         pass
 
 #undo button
-img_undo = Image.open(r"elements2.0Images\assets\undo.png")
+img_undo = Image.open(r"elements2.0Images\undo.png")
 img_undo = img_undo.resize((40,40), Image.ANTIALIAS)
 img_undo1 = ImageTk.PhotoImage(img_undo)
 button_undo = HoverButton(canvastoolbar,  bg = "#0d0d0d", bd="0", image=img_undo1, text = "Undo", compound= "left",fg ="gray",command= undo_clicked)
@@ -938,7 +951,7 @@ def redo_clicked():
         pass
 
 #redo button
-img_redo = Image.open(r"elements2.0Images\assets\redo.png")
+img_redo = Image.open(r"elements2.0Images\redo.png")
 img_redo = img_redo.resize((40,40), Image.ANTIALIAS)
 img_redo1 = ImageTk.PhotoImage(img_redo)
 button_redo = HoverButton(canvastoolbar,  bg = "#0d0d0d", bd="0", image=img_redo1, text = "Redo", compound= "left",fg ="gray", command=redo_clicked)
@@ -948,18 +961,28 @@ button_redo.place(x="13", y="560")
 
 #listen function captures voice
 def listenit():
-    r = speech_recognition.Recognizer()
-    #label_mic_active1 = Label(canvas,text="Listening...", bg="#3b271b" , fg= "white", bd=".5")
-    #label_mic_active1.place(x="700", y="705", relwidth=".3", relheight="0.065")
-    with speech_recognition.Microphone() as source:
-        #label_mic_active = Label(canvas,text="Listening...", bg="#3b271b" , fg= "white", bd=".5",)
-        #label_mic_active.place(x="125", y="705", relwidth=".3", relheight="0.065")
-        print("Listening : ") #debug
-       #r.adjust_for_ambient_noise(source)
-        audio = r.listen(source, timeout= 3)
-        value = r.recognize_google(audio)
-    #label_mic_active1 = Label(canvas,text=value, bg="#0d0d0d" , fg= "white", bd=".5")
-    #label_mic_active1.place(x="700", y="705", relwidth=".3", relheight="0.065")
+    connection()
+    if internet_access == True:
+        r = speech_recognition.Recognizer()
+        #label_mic_active1 = Label(canvas,text="Listening...", bg="#3b271b" , fg= "white", bd=".5")
+        #label_mic_active1.place(x="700", y="705", relwidth=".3", relheight="0.065")
+        with speech_recognition.Microphone() as source:
+            #label_mic_active = Label(canvas,text="Listening...", bg="#3b271b" , fg= "white", bd=".5",)
+            #label_mic_active.place(x="125", y="705", relwidth=".3", relheight="0.065")
+            print("using google recogniser")
+            print("Listening : ") #debug
+            #r.adjust_for_ambient_noise(source)
+            audio = r.listen(source, timeout= 3)
+            value = r.recognize_google(audio)
+        #label_mic_active1 = Label(canvas,text=value, bg="#0d0d0d" , fg= "white", bd=".5")
+        #label_mic_active1.place(x="700", y="705", relwidth=".3", relheight="0.065")
+    elif internet_access == False:
+        print("using pocketsphinx")
+        print("Listening : ")
+        for phrase in LiveSpeech():
+            print (phrase)
+            value = (str(phrase))
+            break
     return value
 
 # keywords
@@ -1165,6 +1188,7 @@ def save():
         save_win.geometry("800x400+400+200")
         save_win.maxsize(800,400)
         save_win.config(bg="#1c1c1c")
+        save_win.grab_set()                                                                                      ## prevent aditional save window opening
 
         ##preview_text
         prv_label=Label(save_win,fg="white",bg="#1c1c1c",text="PREVIEW",font=("Courier", 35))
@@ -1381,8 +1405,19 @@ def on_closing():
     if messagebox.askokcancel("Quit", "Do you want to Stop Editing?"):
         mainwin.destroy()
 
+#listen for do!
+def do():
+    for phrase in LiveSpeech(): 
+        print(phrase)
+        print ("on progress")
+
+# share on social Media
+def share():
+    print("on progress")
+
 #clossing protocol
 mainwin.protocol("WM_DELETE_WINDOW", on_closing)
+
 #main loop
 mainwin.mainloop()
 
@@ -1391,23 +1426,23 @@ mainwin.mainloop()
 
 """
 ### Error ###
-    none
+    board size not right
+    improve offline editing improve accuracy 
 
 ### to add ###
-    independent value getting over voice
+    threaded voice recognition
+    independent value/parameter fetching over voice
     crop
     add text
-    Voiced File browser             #### goes next
-    Share to fb, Insta, Gmail, Twitter
+    Voiced File browser             
+    Social share
     Auto gama correction
-    import options
-    merge images
-    histogram
+    merge images/ add images
+    histogram  
+    do recognition
 """
 
-######################################################## Here By Elements Version 2.0 is Finished ############## 14_April_2020 #############################
-
-######################################################## Next Version Elements Version 2.1 aapproved for development #######################################
+########################################################### 29_April_2020 ###################################################
 
 ##############################################################cerdits #######################################################
 ##########################################################Congratulations####################################################
@@ -1421,9 +1456,8 @@ mainwin.mainloop()
 #############################################################################################################################
 #############################################################################################################################
 
-                                                                  ########### Notice ############
+                                                                  #######################
 ############################################################################################################################################################
-#################### !!!!!! any duplication or tampering of product without the notice of the team is strictly Prohibitted !!!!!!!  ########################
 ############################################################################################################################################################
 
 ################################################################ © Elements® Private Limited 2020 ##########################################################
