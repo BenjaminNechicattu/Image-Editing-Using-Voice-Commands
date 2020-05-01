@@ -81,21 +81,21 @@ Natural Language toolkit is used in order to get the speech and convert it to a 
 Google speech recognition engine coverts the speech that is captured to the corresponding text. This text is then used by the Natural Language Toolkit (NLTK). The Speech is recorded by the system and acquires Google API for speech recognition and uploads the speech to generate the corresponding text. 
 
 # Installing Packages
--  # Tkinter
+-  #### Tkinter
 -       pip install tkinter
-- # Pillow
+- #### Pillow
 -       pip install pillow
-- # Pygame
+- #### Pygame
 -       pip install pygame
-- # NLTK
+- #### NLTK
 -       pip install nltk
-- # IPython
+- #### IPython
 -       pip install ipython
-- # Speech Recognition
+- #### Speech Recognition
 -       pip install speechrecognition
-- # Pyaudio
+- #### Pyaudio
 -       pip install pyaudio
-- # Keyboard
+- #### Keyboard
 -       pip install keyboard
 
 # Running the Program
