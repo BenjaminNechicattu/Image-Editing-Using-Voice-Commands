@@ -64,6 +64,32 @@ This function reduce the image size, resolution thus reducing the memory space o
 ### Save.
 Save function saves the image in a specific name and extension format as the user specify in a user space.
 
+# Program Execution Flow 
+
+The Program begins when the application is open. The application welcomes the user with a splash screen. Soon after the application files and libraries are loaded it checks for internet access. If internet access is available the mic gets activated and listens for a ‘do’ command. After a ‘do’ audio fingerprint is detected you can say any command to be performed in the image. 
+Selecting the image is much easier with an in-app file browser which shows the images within the PC. All you have to do is to say the name of the image or select the image manually.  The selected image is brought to the workspace window. Where you can perform image editing. Now we need to say what operation had to be performed on the image. It is a command. The command is then converted to its corresponding text via Google's Speech Recogniser API. API returns the corresponding text.
+
+![Sequence Diagram](https://drive.google.com/file/d/1rhAq5zh8NeryhqP5XXnPoUd9YpHIp5se/view?usp=sharing)
+  
+The command is now tokenized to tokens. For every token, compares to a keyword in the keyword file. If the token found, calls the corresponding function and perform the action. Else if no token is found in the keyword file, the token is compared with a similar file, to avoid miss predictions. If a similar keyword is found. Then the corresponding function to the ‘similar keyword’ is called and then performs the action on to the image. For some functions, arguments are needed to be passed. For instance, say angle for rotation. When a rotation function is called, an argument has to be passed, angle. Now it’s turn for the argument to be listened and is passed to the function. We can perform enough actions on the image until a save or 
+quit command appears. Save command confirms the edited image and saves the image in new name and a new extension as the user prefer. Quit command quits the image editing window without saving the changes. 
+
+# Technologies Used 
+## Python 
+Core Programming is based on Python Programing language which is more convenient flexible and fast. Python is more understandable as well as readable. Execution and complexity of the program are comparatively easier and less respectively. Python is an interpreter language which helps in sequential execution if the program. 
+
+## Tkinter Python GUI 
+Python has Tkinter GUI which makes combining the scripts together. This makes it executable on any machines that have python within thus making the program cross-platform. 
+
+## Pillow Library 
+The Python Imaging Library adds image processing capabilities to the Python interpreter. Basically every operation on the image can be done using this pillow library. This gives wide file format support, an efficient internal representation, and fairly powerful image processing capabilities. PhotoImage and BitmapImage interfaces help to show the image. The library also supports image resizing, rotation, and arbitrary affine transform. 
+
+## Natural Language toolkit 
+Natural Language toolkit is used in order to get the speech and convert it to a machine-understandable form so that the machine can make meaning from it. Every command that is given to the system is tokenized by the NLTK and this enables the system to find out what operation is to be done on the image taken.
+ 
+## Google Speech Recognition Engine 
+Google speech recognition engine coverts the speech that is captured to the corresponding text. This text is then used by the Natural Language Toolkit (NLTK). The Speech is recorded by the system and acquires Google API for speech recognition and uploads the speech to generate the corresponding text. 
+
 # Installing Packages
 -  # Tkinter
 -       pip install tkinter
@@ -82,10 +108,13 @@ Save function saves the image in a specific name and extension format as the use
 - # Keyboard
 -       pip install keyboard
 
-
 # Running the Program
-1) Extract the files in a folder
-2) Execute pyhton file _elements.py_
+-1) Extract the files in a folder
+-2) Execute pyhton file _elements.py_
+
+# Conclusion
+We introduced **ELEMENTS**, A multimodal interface system to support image editing tasks through voice and direct manipulation. Other than editing functionalities "Elements" is enabled with a browsing of an image as well as saving an image after editing. We can browse our file manager or even the internet by using appropriate voice commands. After editing the procedure is the complete user can save the image using the "save" command and we can specify the appropriate location as well as the name in which image is to be saved. Thereby implementing each functionality with voice. Coming to the editing functionalities we have implemented all the features that are essential for an editing tool. Features include brightness, Contrast, crop, rotate, a total of 9 filters etc., and all these using voice commands. "Elements" have an add on functionality of image compression. Image that we select for editing maybe of larger size and we can compress them after according to our requirement, compression ratio is on a scale of 0-100. The key feature that makes "Elements" unique from other editing tools is that it is voice enabled, as it is voice controlled it can be used by the "differently abled people". Voice commands are less complex than shortcuts and is has a user-friendly UI which all makes it easy to use. So now editing is no more a complex task just tell what to do and it’s done. 
+References 
 
 # About Team
 - Benjamin G Nechicattu
