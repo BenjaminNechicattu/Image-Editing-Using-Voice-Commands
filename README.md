@@ -62,17 +62,7 @@ Just like blurring, this function smoothens the objects in the image. For more s
 This function reduce the image size, resolution thus reducing the memory space occupied by the image while saving. 
 
 ### Save.
-Save function saves the image in a specific name and extension format as the user specify in a user space.
-
-# Program Execution Flow 
-
-The Program begins when the application is open. The application welcomes the user with a splash screen. Soon after the application files and libraries are loaded it checks for internet access. If internet access is available the mic gets activated and listens for a ‘do’ command. After a ‘do’ audio fingerprint is detected you can say any command to be performed in the image. 
-Selecting the image is much easier with an in-app file browser which shows the images within the PC. All you have to do is to say the name of the image or select the image manually.  The selected image is brought to the workspace window. Where you can perform image editing. Now we need to say what operation had to be performed on the image. It is a command. The command is then converted to its corresponding text via Google's Speech Recogniser API. API returns the corresponding text.
-
-![Sequence Diagram](https://drive.google.com/file/d/1rhAq5zh8NeryhqP5XXnPoUd9YpHIp5se/view?usp=sharing)
-  
-The command is now tokenized to tokens. For every token, compares to a keyword in the keyword file. If the token found, calls the corresponding function and perform the action. Else if no token is found in the keyword file, the token is compared with a similar file, to avoid miss predictions. If a similar keyword is found. Then the corresponding function to the ‘similar keyword’ is called and then performs the action on to the image. For some functions, arguments are needed to be passed. For instance, say angle for rotation. When a rotation function is called, an argument has to be passed, angle. Now it’s turn for the argument to be listened and is passed to the function. We can perform enough actions on the image until a save or 
-quit command appears. Save command confirms the edited image and saves the image in new name and a new extension as the user prefer. Quit command quits the image editing window without saving the changes. 
+Save function saves the image in a specific name and extension format as the user specify in a user space. 
 
 # Technologies Used 
 ## Python 
