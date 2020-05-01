@@ -1,0 +1,27 @@
+
+################################################# This File Contains the details of assigned shortcut keys #################################################
+
+            blur_                           :
+            blur more                       :
+            sharpness_                      :
+            smooth _                        :
+            smooth more                     :
+            embross                         :
+            contour                         :
+            add text_                       :           T
+            contrast_                       :           c
+
+            flip                            :
+                    right-left              :           f
+                    up-down                 :           F
+                    
+            details                         :           d
+            saturation                      :           s
+            crop_                           :           C
+
+##################################################################### Other Operations #####################################################################
+
+            undo                            :           Backspace
+            redo                            :           \
+
+################################################# This File Contains the details of assigned shortcut keys #################################################
