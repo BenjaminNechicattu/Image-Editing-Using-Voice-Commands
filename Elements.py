@@ -1,5 +1,5 @@
 ###################################################### !!!! to run the Program ###########################################################
-#       ## Execute Elements.py // this file python Elements.py // in command line
+#       ## Execute Elements GUI Main
 
 ## Library Dependencies##
 #      ## Python
@@ -10,7 +10,7 @@
 #      ## IPython
 #      ## Speech Recognition
 
-######## !!!! Internet Access Required For better experience in Voice Activated Editing ###########
+######## !!!! Internet Access Required For Voice Activated Editing ###########
 
 ############################################################## Imports ###################################################################
 import tkinter                                                                                              ## imports GUI Library
@@ -34,6 +34,8 @@ import urllib                                                                   
 import keyboard                                                                                             ## for simulating keyboard actions
 import math                                                                                                 ## for mathematical operations with shapes
 from pocketsphinx import LiveSpeech                                                                         ## pocketsphinx lib for offline voice detection
+from pynput.keyboard import Key, Listener                                                                   ## detect keyboard press for shortcuts with listener
+from pynput import keyboard                                                                                 ## keyboard press for shortcut
 
 ############################################################### Class ####################################################################
 #Hover button Class 
@@ -410,6 +412,7 @@ button_import.place(x="10", y="695", relwidth=".05", relheight=".05")
 textBox=Text(canvas,height=2, width=10, bg="#1a1a1a" , bd="0", fg="white")
 textBox.place(x="125", y="705", relwidth=".3", relheight="0.065")
 
+
 #Get user input
 def retrieve_input():
     ########## original
@@ -478,19 +481,19 @@ button_settings.place(x="15", y="0")
 
 #brightness Function
 def brightness_clicked():
-
-    br=float(retrieve_input())
     global current_img
-    img=ImageEnhance.Brightness(current_img)
-    image=img.enhance(br)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    current_img=image
-    bright_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= bright_img
-    labelshow.configure(image= bright_img)
-    current_img=image
-    Undo.append(current_img)
+    if current_img:
+        br=float(retrieve_input())
+        img=ImageEnhance.Brightness(current_img)
+        image=img.enhance(br)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        current_img=image
+        bright_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= bright_img
+        labelshow.configure(image= bright_img)
+        current_img=image
+        Undo.append(current_img)
     #return current_img
 
 #brightness button
@@ -502,16 +505,17 @@ button_brightness.place(x="15", y="50")
 
 #rotatae button Function
 def rot_clicked():
-    angle=retrieve_input() 
-    global current_img    
-    image= current_img.rotate(float(angle),expand=1)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    rotate_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= rotate_img
-    labelshow.config(image= rotate_img)
-    current_img=image
-    Undo.append(current_img)
+    global current_img  
+    if current_img:
+        angle=retrieve_input()   
+        image= current_img.rotate(float(angle),expand=1)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        rotate_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= rotate_img
+        labelshow.config(image= rotate_img)
+        current_img=image
+        Undo.append(current_img)
     #return current_img        
 
 #rotate button
@@ -578,205 +582,216 @@ button_crop.place(x="15", y="150")
 
 #sharpness Function
 def sharpness_clicked():
-    sp = retrieve_input()
-    print (sp)
     global current_img
-    imbr = ImageEnhance.Sharpness(current_img)
-    image = imbr.enhance(int (sp))
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    sharpness_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= sharpness_img
-    labelshow.configure(image= sharpness_img)
-    current_img=image
-    Undo.append(current_img)
-    canvasfilter.destroy()
-    #return current_img
+    if current_img:
+        sp = retrieve_input()
+        print (sp)
+        imbr = ImageEnhance.Sharpness(current_img)
+        image = imbr.enhance(int (sp))
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        sharpness_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= sharpness_img
+        labelshow.configure(image= sharpness_img)
+        current_img=image
+        Undo.append(current_img)
+        canvasfilter.destroy()
+        #return current_img
     
 #blur Function
 def blur_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.BLUR)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    blur_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= blur_img
-    labelshow.configure(image= blur_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.BLUR)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        blur_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= blur_img
+        labelshow.configure(image= blur_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #enhance Function
 def enhance_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.EDGE_ENHANCE)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    enh_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= enh_img
-    labelshow.configure(image= enh_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.EDGE_ENHANCE)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        enh_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= enh_img
+        labelshow.configure(image= enh_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #smooth Function
 def smooth_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.SMOOTH)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    smth_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= smth_img
-    labelshow.configure(image= smth_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.SMOOTH)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        smth_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= smth_img
+        labelshow.configure(image= smth_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #smooth more Function
 def smooth_more_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.SMOOTH_MORE)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    smth_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= smth_img
-    labelshow.configure(image= smth_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.SMOOTH_MORE)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        smth_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= smth_img
+        labelshow.configure(image= smth_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #detail Function
 def detail_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.DETAIL)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    dtl_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= dtl_img
-    labelshow.configure(image= dtl_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.DETAIL)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        dtl_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= dtl_img
+        labelshow.configure(image= dtl_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #emboss Function
 def embross_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.EMBOSS)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    emb_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= emb_img
-    labelshow.configure(image= emb_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.EMBOSS)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        emb_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= emb_img
+        labelshow.configure(image= emb_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #contour Function
 def contour_clicked():
     global current_img
-    image = current_img.filter(ImageFilter.CONTOUR)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    cntr_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= cntr_img
-    labelshow.configure(image= cntr_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.filter(ImageFilter.CONTOUR)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        cntr_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= cntr_img
+        labelshow.configure(image= cntr_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #saturation function
 def black_and_White_clicked():
     global current_img
-    imbr = ImageEnhance.Color(current_img)
-    image = imbr.enhance(0)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    bw_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= bw_img
-    labelshow.configure(image= bw_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        imbr = ImageEnhance.Color(current_img)
+        image = imbr.enhance(0)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        bw_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= bw_img
+        labelshow.configure(image= bw_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #filter specific buttons/  canvas
 def filter_clicked():
     #filter canvas
     global canvasfilter
-    canvasfilter = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
-    canvasfilter.place(x="950", y="230", relwidth="0.123", relheight="0.45")
-    canvasfilter.after(3000, canvasfilter.destroy)
-    canvastoolbar.destroy
-    #sharpness button
-    img_sharp = Image.open(r"elements2.0Images\assets\filter.png")
-    img_sharp = img_sharp.resize((30,30), Image.ANTIALIAS)
-    img_sharp1 = ImageTk.PhotoImage(img_sharp)
-    img_sharp1.image=img_sharp1
-    button_sharp = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_sharp1, text = "Sharpness", compound= "left",fg ="gray",command=lambda:sharpness_clicked())
-    button_sharp.place(x="30", y="0")
+    if current_img:
+        canvasfilter = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
+        canvasfilter.place(x="950", y="230", relwidth="0.123", relheight="0.45")
+        canvasfilter.after(3000, canvasfilter.destroy)
+        canvastoolbar.destroy
 
-    #blur button
-    img_blur = Image.open(r"elements2.0Images\assets\filter.png")
-    img_blur = img_blur.resize((30,30), Image.ANTIALIAS)
-    img_blur1 = ImageTk.PhotoImage(img_blur)
-    img_blur1.image=img_blur1
-    button_blur = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_blur1, text = "Blur", compound= "left",fg ="gray",command=lambda:blur_clicked())
-    button_blur.place(x="30", y="40")
+        #sharpness button
+        img_sharp = Image.open(r"elements2.0Images\assets\filter.png")
+        img_sharp = img_sharp.resize((30,30), Image.ANTIALIAS)
+        img_sharp1 = ImageTk.PhotoImage(img_sharp)
+        img_sharp1.image=img_sharp1
+        button_sharp = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_sharp1, text = "Sharpness", compound= "left",fg ="gray",command=lambda:sharpness_clicked())
+        button_sharp.place(x="30", y="0")
 
-    #enhance button
-    img_enhance = Image.open(r"elements2.0Images\assets\filter.png")
-    img_enhance = img_enhance.resize((30,30), Image.ANTIALIAS)
-    img_enhance1 = ImageTk.PhotoImage(img_enhance)
-    img_enhance1.image=img_enhance1
-    button_enhance = HoverButton(canvasfilter, bg = "#0d0d0d", bd="0", image=img_enhance1, text = "Enhance   ", compound= "left",fg ="gray",command=lambda:enhance_clicked())
-    button_enhance.place(x="30", y="80")
+        #blur button
+        img_blur = Image.open(r"elements2.0Images\assets\filter.png")
+        img_blur = img_blur.resize((30,30), Image.ANTIALIAS)
+        img_blur1 = ImageTk.PhotoImage(img_blur)
+        img_blur1.image=img_blur1
+        button_blur = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_blur1, text = "Blur", compound= "left",fg ="gray",command=lambda:blur_clicked())
+        button_blur.place(x="30", y="40")
 
-    #smooth button
-    img_smooth = Image.open(r"elements2.0Images\assets\filter.png")
-    img_smooth = img_smooth.resize((30,30), Image.ANTIALIAS)
-    img_smooth1 = ImageTk.PhotoImage(img_smooth)
-    img_smooth1.image=img_smooth1
-    button_smooth = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_smooth1, text = "Smooth   ", compound= "left",fg ="gray",command=lambda:smooth_clicked())
-    button_smooth.place(x="30", y="120")
+        #enhance button
+        img_enhance = Image.open(r"elements2.0Images\assets\filter.png")
+        img_enhance = img_enhance.resize((30,30), Image.ANTIALIAS)
+        img_enhance1 = ImageTk.PhotoImage(img_enhance)
+        img_enhance1.image=img_enhance1
+        button_enhance = HoverButton(canvasfilter, bg = "#0d0d0d", bd="0", image=img_enhance1, text = "Enhance   ", compound= "left",fg ="gray",command=lambda:enhance_clicked())
+        button_enhance.place(x="30", y="80")
 
-    #smoothify button
-    img_smooth_more = Image.open(r"elements2.0Images\assets\filter.png")
-    img_smooth_more = img_smooth_more.resize((30,30), Image.ANTIALIAS)
-    img_smooth_more1 = ImageTk.PhotoImage(img_smooth_more)
-    img_smooth_more1.image=img_smooth_more1
-    button_smooth_more = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_smooth_more1, text = "Smoothify", compound= "left",fg ="gray",command=lambda:smooth_more_clicked())
-    button_smooth_more.place(x="30", y="160")
+        #smooth button
+        img_smooth = Image.open(r"elements2.0Images\assets\filter.png")
+        img_smooth = img_smooth.resize((30,30), Image.ANTIALIAS)
+        img_smooth1 = ImageTk.PhotoImage(img_smooth)
+        img_smooth1.image=img_smooth1
+        button_smooth = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_smooth1, text = "Smooth   ", compound= "left",fg ="gray",command=lambda:smooth_clicked())
+        button_smooth.place(x="30", y="120")
 
-    #detail button
-    img_detail = Image.open(r"elements2.0Images\assets\filter.png")
-    img_detail = img_detail.resize((30,30), Image.ANTIALIAS)
-    img_detail1 = ImageTk.PhotoImage(img_detail)
-    img_detail1.image=img_detail1
-    button_detail = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_detail1, text = "Details     ", compound= "left",fg ="gray",command=lambda:detail_clicked())
-    button_detail.place(x="30", y="200")
+        #smoothify button
+        img_smooth_more = Image.open(r"elements2.0Images\assets\filter.png")
+        img_smooth_more = img_smooth_more.resize((30,30), Image.ANTIALIAS)
+        img_smooth_more1 = ImageTk.PhotoImage(img_smooth_more)
+        img_smooth_more1.image=img_smooth_more1
+        button_smooth_more = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_smooth_more1, text = "Smoothify", compound= "left",fg ="gray",command=lambda:smooth_more_clicked())
+        button_smooth_more.place(x="30", y="160")
 
-    #emboss button
-    img_embross = Image.open(r"elements2.0Images\assets\filter.png")
-    img_embross = img_embross.resize((30,30), Image.ANTIALIAS)
-    img_embross1 = ImageTk.PhotoImage(img_embross)
-    img_embross1.image=img_embross1
-    button_embross = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_embross1, text = "Embross ", compound= "left",fg ="gray",command=lambda:embross_clicked())
-    button_embross.place(x="30", y="240")
+        #detail button
+        img_detail = Image.open(r"elements2.0Images\assets\filter.png")
+        img_detail = img_detail.resize((30,30), Image.ANTIALIAS)
+        img_detail1 = ImageTk.PhotoImage(img_detail)
+        img_detail1.image=img_detail1
+        button_detail = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_detail1, text = "Details     ", compound= "left",fg ="gray",command=lambda:detail_clicked())
+        button_detail.place(x="30", y="200")
 
-    #contour button
-    img_contour = Image.open(r"elements2.0Images\assets\filter.png")
-    img_contour = img_contour.resize((30,30), Image.ANTIALIAS)
-    img_contour1 = ImageTk.PhotoImage(img_contour)
-    img_contour1.image=img_contour1
-    button_contour = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_contour1, text = "Countour", compound= "left",fg ="gray",command=lambda:contour_clicked())
-    button_contour.place(x="30", y="280")
+        #emboss button
+        img_embross = Image.open(r"elements2.0Images\assets\filter.png")
+        img_embross = img_embross.resize((30,30), Image.ANTIALIAS)
+        img_embross1 = ImageTk.PhotoImage(img_embross)
+        img_embross1.image=img_embross1
+        button_embross = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_embross1, text = "Embross ", compound= "left",fg ="gray",command=lambda:embross_clicked())
+        button_embross.place(x="30", y="240")
 
-    #black and white button
-    img_bw = Image.open(r"elements2.0Images\assets\filter.png")
-    img_bw = img_bw.resize((30,30), Image.ANTIALIAS)
-    img_bw1 = ImageTk.PhotoImage(img_bw)
-    img_bw1.image=img_bw1
-    button_contour = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_bw1, text = "Black&White", compound= "left",fg ="gray",command=lambda:black_and_White_clicked())
-    button_contour.place(x="30", y="320")
+        #contour button
+        img_contour = Image.open(r"elements2.0Images\assets\filter.png")
+        img_contour = img_contour.resize((30,30), Image.ANTIALIAS)
+        img_contour1 = ImageTk.PhotoImage(img_contour)
+        img_contour1.image=img_contour1
+        button_contour = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_contour1, text = "Countour", compound= "left",fg ="gray",command=lambda:contour_clicked())
+        button_contour.place(x="30", y="280")
+
+        #black and white button
+        img_bw = Image.open(r"elements2.0Images\assets\filter.png")
+        img_bw = img_bw.resize((30,30), Image.ANTIALIAS)
+        img_bw1 = ImageTk.PhotoImage(img_bw)
+        img_bw1.image=img_bw1
+        button_contour = HoverButton(canvasfilter,  bg = "#0d0d0d", bd="0", image=img_bw1, text = "Black&White", compound= "left",fg ="gray",command=lambda:black_and_White_clicked())
+        button_contour.place(x="30", y="320")
 
 #filer button
 img_filter = Image.open(r"elements2.0Images\assets\filter.png")
@@ -788,6 +803,12 @@ button_filter.place(x="15", y="200")
 #add Text button
 def addtext_clicked():
     print("on progress")
+    canvas_add_text = Canvas(canvas, bg ="gray", bd="0", borderwidth = "0", highlightthickness = "0" )
+    canvas_add_text.place(x="950", y="230", relwidth="0.123", relheight="0.45")
+
+    global current_img
+    draw = ImageDraw.Draw(current_img)
+    content_get_label="content"
     
 #add text function
 img_addtext = Image.open(r"elements2.0Images\assets\addtext.png")
@@ -799,18 +820,19 @@ button_addtext.place(x="15", y="250")
 #contrast button function
 def contrast_clicked():
     global current_img
-    br=retrieve_input()
-    print (br)
-    imbr = ImageEnhance.Contrast(current_img)
-    image = imbr.enhance(float (br))
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    cntrst_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= cntrst_img
-    labelshow.configure(image= cntrst_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        br=retrieve_input()
+        print (br)
+        imbr = ImageEnhance.Contrast(current_img)
+        image = imbr.enhance(float (br))
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        cntrst_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= cntrst_img
+        labelshow.configure(image= cntrst_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #contrast button
 img_contrast = Image.open(r"elements2.0Images\contrast.png")
@@ -822,50 +844,54 @@ button_contrast.place(x="13", y="300")
 #flip right-lrft funtion
 def flip_right_clicked():
     global current_img
-    image = current_img.transpose(method=Image.FLIP_LEFT_RIGHT)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    flip_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= flip_img
-    labelshow.configure(image= flip_img)
-    current_img=image
-    Undo.append(current_img)
+    if current_img:
+        image = current_img.transpose(method=Image.FLIP_LEFT_RIGHT)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        flip_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= flip_img
+        labelshow.configure(image= flip_img)
+        current_img=image
+        Undo.append(current_img)
     #return current_img
 
 #flip top down function
 def flip_top_clicked():
     global current_img
-    image = current_img.transpose(method=Image.FLIP_TOP_BOTTOM)
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    flip_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= flip_img
-    labelshow.configure(image= flip_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        image = current_img.transpose(method=Image.FLIP_TOP_BOTTOM)
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        flip_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= flip_img
+        labelshow.configure(image= flip_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
  
 #flip specific buttons / canvas
 def flip_clicked():
     #flip canvas
-    canvasflip = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
-    canvasflip.place(x="950", y="380", relwidth="0.123", relheight="0.1")
-    canvasflip.after(2000, canvasflip.destroy)
-    #flip rigth - left button
-    flipright = Image.open(r"elements2.0Images\undo.png")
-    flipright = flipright.resize((40,40), Image.ANTIALIAS)
-    flipright1 = ImageTk.PhotoImage(flipright)
-    flipright1.image=flipright1
-    button_flipright = HoverButton(canvasflip,  bg = "#0d0d0d", bd="0", image=flipright1, text = "Flip Right", compound= "left",fg ="gray", command=lambda: flip_right_clicked())
-    button_flipright.place(x="30", y="0")
+    global current_img
+    if current_img:
+        canvasflip = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
+        canvasflip.place(x="950", y="380", relwidth="0.123", relheight="0.1")
+        canvasflip.after(2000, canvasflip.destroy)
+        #flip rigth - left button
+        flipright = Image.open(r"elements2.0Images\undo.png")
+        flipright = flipright.resize((40,40), Image.ANTIALIAS)
+        flipright1 = ImageTk.PhotoImage(flipright)
+        flipright1.image=flipright1
+        button_flipright = HoverButton(canvasflip,  bg = "#0d0d0d", bd="0", image=flipright1, text = "Flip Right", compound= "left",fg ="gray", command=lambda: flip_right_clicked())
+        button_flipright.place(x="30", y="0")
 
-    #flip top- botton
-    fliptop = Image.open(r"elements2.0Images\redo.png")
-    fliptop = fliptop.resize((40,40), Image.ANTIALIAS)
-    fliptop1 = ImageTk.PhotoImage(fliptop)
-    fliptop1.image=fliptop1
-    button_fliptop = HoverButton(canvasflip,  bg = "#0d0d0d", bd="0", image=fliptop1, text = "Flip top   ", compound= "left",fg ="gray", command=lambda: flip_top_clicked())
-    button_fliptop.place(x="30", y="40")
+        #flip top- botton
+        fliptop = Image.open(r"elements2.0Images\redo.png")
+        fliptop = fliptop.resize((40,40), Image.ANTIALIAS)
+        fliptop1 = ImageTk.PhotoImage(fliptop)
+        fliptop1.image=fliptop1
+        button_fliptop = HoverButton(canvasflip,  bg = "#0d0d0d", bd="0", image=fliptop1, text = "Flip top   ", compound= "left",fg ="gray", command=lambda: flip_top_clicked())
+        button_fliptop.place(x="30", y="40")
 
 #flip button
 img_flip = Image.open(r"elements2.0Images\flip.png")
@@ -877,18 +903,19 @@ button_flip.place(x="13", y="350")
 #saturation function
 def saturation_clicked():
     global current_img
-    br=retrieve_input()
-    print (br)
-    imbr = ImageEnhance.Color(current_img)
-    image = imbr.enhance(int (br))
-    width, height = image.size
-    image_resized = resize_image(width, height,label_width,label_height,image)
-    cntrst_img = ImageTk.PhotoImage(image=image_resized)
-    labelshow.image= cntrst_img
-    labelshow.configure(image= cntrst_img)
-    current_img=image
-    Undo.append(current_img)
-    #return current_img
+    if current_img:
+        br=retrieve_input()
+        print (br)
+        imbr = ImageEnhance.Color(current_img)
+        image = imbr.enhance(int (br))
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        cntrst_img = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= cntrst_img
+        labelshow.configure(image= cntrst_img)
+        current_img=image
+        Undo.append(current_img)
+        #return current_img
 
 #Saturation button
 img_saturation = Image.open(r"elements2.0Images\saturation.png")
@@ -950,7 +977,7 @@ def redo_clicked():
     else:
         pass
 
-#redo button
+# redo button
 img_redo = Image.open(r"elements2.0Images\redo.png")
 img_redo = img_redo.resize((40,40), Image.ANTIALIAS)
 img_redo1 = ImageTk.PhotoImage(img_redo)
@@ -959,7 +986,7 @@ button_redo.place(x="13", y="560")
 
 ##################################################### voice/ mic active/ listen ###########################################################
 
-#listen function captures voice
+# listen function captures voice
 def listenit():
     connection()
     if internet_access == True:
@@ -986,10 +1013,16 @@ def listenit():
     return value
 
 # keywords
-keyword_list=["brightness", "crop","import", "smooth", "smooth more","effect","effects","rotate","backward","embross", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast", "flip", "details", "saturation", "undo", "redo", "warmth"]
+keyword_list=["brightness", "crop","import", "smooth", "smooth more","effect","effects","rotate","backward","embross", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast", "flip", "details", "saturation", "undo", "redo"]
 
-#mic function 
-#voice function
+# similar keyword dictionary {key:value}
+similar_keywords_dicionary= {"rope":["crop","crore"],"rot":["rotate"]}
+
+# Sugestions 
+sugestion_dictionary = {}
+
+# mic function 
+# voice function
 def mic_activate():
     Quit = 'no'
     Save = 'no'
@@ -1092,7 +1125,7 @@ img_mic1 = ImageTk.PhotoImage(img_mic)
 button_mic = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_mic1, activebackground='#0d0d0d',cursor="hand2" ,command =  lambda: mic_activate())
 button_mic.place(x="550", y="700", relwidth=".075", relheight=".09")
 
-############################################################ Play Button #################################################################
+############################################################ Play Button ##################################################################
 #play button function
 def playbtn_clicked():
     play_win = Toplevel(mainwin)
@@ -1138,6 +1171,7 @@ button_play.place(x="1062", y="700", relwidth=".065", relheight=".05")
 
 import_label=Label(canvas1,fg="white",bg="black",text=None)
 import_label.place(x="460",y="270")
+
 ############################################################# Save Portion ##############################################################
 #save using top level for voice on progerss
 def saved():                                                                                           ## image Saved confirmation stay or leave??
@@ -1409,17 +1443,68 @@ def on_closing():
 def do():
     for phrase in LiveSpeech(): 
         print(phrase)
-        print ("on progress")
+        key = str (phrase)
+        okey_elements = ["okey", "elements", "ok", "element","do" ]
+        while key in okey_elements:
+            print ("on progress")
+            print (key)
+            # mic_activate()
 
 # share on social Media
 def share():
     print("on progress")
 
+# detects keyboard shortcuts press
+def on_press(key):
+    try:
+        print('alphanumeric key {0} pressed'.format(
+            key.char))
+    except AttributeError:
+        print('special key {0} pressed'.format(
+            key))
+
+# detects keyboard shortcuts press
+def on_release(key):
+    try:
+        print('alphanumeric key {0} released'.format(key.char))
+        if key.char == 's':
+            sharpness_clicked()
+        elif key.char == 'd':
+            detail_clicked()
+        elif key.char == 'b':
+            brightness_clicked()
+        elif key.char == 'T':
+            addtext_clicked()
+        elif key.char == 'C':
+            crop_clicked()
+        elif key.char == 'S':
+            sharpness_clicked()
+        elif key.char == 'c':
+            contrast_clicked()
+        elif key.char == 'q':
+            smooth_clicked()
+        elif key.char == 'f':
+            flip_right_clicked()
+        elif key.char == 'F':
+            flip_top_clicked()
+
+    except AttributeError:
+        print('special key {0} released'.format(key))
+        if key == keyboard.Key.esc:
+            # Stop listener
+            return False
+
+# Collect events from keyboard until released while on worksapce
+print ("accepting keyboard shortcuts")
+listener = keyboard.Listener(on_press=on_press,on_release=on_release)
+listener.start()
+
 #clossing protocol
 mainwin.protocol("WM_DELETE_WINDOW", on_closing)
 
 #main loop
-mainwin.mainloop()
+if __name__ == "__main__":
+    mainwin.mainloop()
 
 ############################################################################################################################################################
 ############################################################################################################################################################
@@ -1427,33 +1512,47 @@ mainwin.mainloop()
 """
 ### Error ###
     board size not right
-    improve offline editing improve accuracy 
+    organise offline editing for indian slang
+    customize keybord shortcuts
+    mesed up Entry of values
 
 ### to add ###
-    threaded voice recognition
+    active voice recognition
     independent value/parameter fetching over voice
     crop
     add text
     Voiced File browser             
     Social share
     Auto gama correction
-    merge images/ add images
-    histogram  
-    do recognition
+    merge images/add
+    histogram
+    okey elements recognition
+    ruler
+
+### try ###
+    canvas.move  
+                https://www.geeksforgeeks.org/python-tkinter-moving-objects-using-canvas-move-method/
+    selecting operations using key board 
+                https://subscription.packtpub.com/book/web_development/9781788622301/1/ch01lvl1sec20/handling-mouse-and-keyboard-events
 """
 
-########################################################### 29_April_2020 ###################################################
+############################################################################## 01_May_2020 ###############################################################
 
-##############################################################cerdits #######################################################
-##########################################################Congratulations####################################################
+    ######################################################################################################################################################
 
-############################# Done Maria James                      : UI/ UX Development/ Programming       #################
-############################# Benjamin G Nechicattu                 : UI/ UX Development/ Programming       #################
-############################# Albin Saji                            : Modules Programming, Testing          #################
-############################# Akash Johnny Kunnath                  : Modules Programmig, Testing           #################
-############################# Suma R                                : Guide, Testing                        #################
+    ##############################################################cerdits #######################################################
+    ##########################################################Congratulations####################################################
 
-#############################################################################################################################
-#############################################################################################################################
+    ############################# Done Maria James                      : UI/ UX Development/ Programming       #################
+    ############################# Benjamin G Nechicattu                 : UI/ UX Development/ Programming       #################
+    ############################# Albin Saji                            : Modules Programming, Testing          #################
+    ############################# Akash Johnny Kunnath                  : Modules Programmig, Testing           #################
+    ############################# Suma R                                : Guide, Testing                        #################
+
+    #############################################################################################################################
+    #############################################################################################################################
+
+    #######################################################################################################################################################
+    #######################################################################################################################################################
 
 ################################################################ © Elements® Private Limited 2020 ##########################################################
