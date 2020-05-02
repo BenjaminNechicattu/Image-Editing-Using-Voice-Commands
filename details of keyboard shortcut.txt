@@ -8,6 +8,7 @@
             smooth more                     :
             embross                         :
             contour                         :
+            rotate                          :           r
             add text_                       :           T
             contrast_                       :           c
 
