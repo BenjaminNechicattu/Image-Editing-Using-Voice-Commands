@@ -2,13 +2,13 @@
 #       ## Execute Elements GUI Main
 
 ## Library Dependencies##
-#      ## Python
-#      ## Tkinter
-#      ## Pillow
-#      ## Pygame
-#      ## NLTK
-#      ## IPython
-#      ## Speech Recognition
+    #      ## Python
+    #      ## Tkinter
+    #      ## Pillow
+    #      ## Pygame
+    #      ## NLTK
+    #      ## IPython
+    #      ## Speech Recognition
 
 ######## !!!! Internet Access Required For Voice Activated Editing ###########
 
@@ -36,6 +36,7 @@ import math                                                                     
 from pocketsphinx import LiveSpeech                                                                         ## pocketsphinx lib for offline voice detection
 from pynput.keyboard import Key, Listener                                                                   ## detect keyboard press for shortcuts with listener
 from pynput import keyboard                                                                                 ## keyboard press for shortcut
+import random                                                                                               ## import random generator
 
 ############################################################### Class ####################################################################
 #Hover button Class 
@@ -102,10 +103,10 @@ def connection():
 
 #logo Button FunctionS
 def logobtn_clicked():
-    
+    random_number = str(random.randint(0, 21))
     logo_win = Toplevel(mainwin)
-    img1_logo = Image.open(r"elements2.0Images\assets\splashscreen.png")
-    img1_logo = img1_logo.resize((900,400), Image.ANTIALIAS)
+    img1_logo = Image.open(r"elements2.0Images/splashscreen/"+ random_number + ".png")
+    img1_logo = img1_logo.resize((900,563), Image.ANTIALIAS)
     photo_logo = ImageTk.PhotoImage(img1_logo)
     l1= Label(logo_win, bg="grey", image=photo_logo)
     l1.pack()
@@ -113,10 +114,10 @@ def logobtn_clicked():
     
     logo_win.title("Credits")
     logo_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
-    logo_win.geometry("900x400+400+200")
-    logo_win.maxsize(900,400)
+    logo_win.geometry("900x563+400+200")
+    logo_win.maxsize(900,563)
     logo_win.attributes('-topmost', 'true')                                                         ## bring savve window top and visible
-    logo_win.after(3000, logo_win.destroy)
+    logo_win.after(3456, logo_win.destroy)
 
 #logo button
 img_logo = Image.open(r"elements2.0Images\elementslogo.png")
@@ -332,7 +333,7 @@ def import_options():
     ## Apply
     def apply_board():
         global current_img
-  
+        global original_img
         # get board size
         w=  int (w_board)
         h=  int (h_board)
@@ -350,7 +351,8 @@ def import_options():
         board_show = ImageTk.PhotoImage(image=image_resized)
         labelshow.image= board_show
         labelshow.config(image= board_show)
-        current_img=board
+        current_img = board
+        original_img = board
 
         # destroy unrequired
         import_label.destroy()
@@ -388,7 +390,9 @@ def import_clicked():
     name = fd.askopenfilename(filetypes=[('Image Files', ['.jpeg','.jpg','.png','.gif','.tiff','.tif','.bmp'])],title='Please select a picture to Elementize',initialfile="Select a file to elemetize.")     ## shows only these extentions
     image = Image.open(name)
     global current_img 
-    current_img=image
+    global original_img
+    current_img=image                                                                           ## editing variable
+    original_img=image                                                                          ## keeping original copy of image for comparison
     #img_frm = image.resize((1018,598), Image.ANTIALIAS)
     #current_img=img_frm
     width, height = image.size
@@ -1126,51 +1130,40 @@ button_mic = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_mic1, active
 button_mic.place(x="550", y="700", relwidth=".075", relheight=".09")
 
 ############################################################ Play Button ##################################################################
-#play button function
-def playbtn_clicked():
-    play_win = Toplevel(mainwin)
-    play_win.title("elements_Music")
-    play_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
-    play_win.geometry("600x400+400+200")
 
-    play_logo = Image.open(r"elements2.0Images\logofull2.png")
-    play_logo = play_logo.resize((600,400), Image.ANTIALIAS)
-    photo_logo = ImageTk.PhotoImage(play_logo)
-    l1= Label(play_win, image=photo_logo)
-    l1.pack()
-    l1.photo=photo_logo
-
-    play_button = Image.open(r"elements2.0Images\play-button.png")
-    play_button = play_button.resize((40,30), Image.ANTIALIAS)
-    play_button1 = ImageTk.PhotoImage(play_button)
-    button_play_button = HoverButton(play_win,  bd="0", image=play_button1)
-    button_play_button.place(x="350", y="50", relwidth=".07", relheight=".074")
-    button_play_button.play_button1 = play_button1
-
-    play_back = Image.open(r"elements2.0Images\play-button.png")
-    play_back = play_back.resize((40,30), Image.ANTIALIAS)
-    play_back1 = ImageTk.PhotoImage(play_back)
-    button_play_back = HoverButton(play_win, bg="white",  bd="0", image=play_back1)
-    button_play_back.place(x="300", y="50", relwidth=".07", relheight=".065")
-    button_play_back.play_back1 = play_back1
-
-    #add music to collection button
-    add_music = Image.open(r"elements2.0Images\play-button.png")
-    add_music = add_music.resize((40,30), Image.ANTIALIAS)
-    add_music1 = ImageTk.PhotoImage(add_music)
-    button_add_music = HoverButton(play_win,  bd="0", image=add_music1)
-    button_add_music.place(x="400", y="50", relwidth=".07", relheight=".074")
-    button_add_music.add_music = add_music1
-
-# play button
-img_play = Image.open(r"elements2.0Images\play-button.png")
-img_play = img_play.resize((30,30), Image.ANTIALIAS)
-img_play1 = ImageTk.PhotoImage(img_play)
-button_play = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_play1, activebackground='#0d0d0d', compound= "left",fg ="gray",command= playbtn_clicked)
-button_play.place(x="1062", y="700", relwidth=".065", relheight=".05")
-
+# to shows import error
 import_label=Label(canvas1,fg="white",bg="black",text=None)
 import_label.place(x="460",y="270")
+
+## show original image on hover // for comparison  click to reset
+def show_on_enter(event): 
+    global original_img
+    width, height = original_img.size
+    image_resized = resize_image(width, height,label_width,label_height,original_img)
+    showimage = ImageTk.PhotoImage(image=image_resized)
+    labelshow.image= showimage
+    labelshow.configure(image= showimage)
+
+def show_on_leave(event): 
+    global current_img
+    image= current_img
+    width, height = image.size
+    image_resized = resize_image(width, height,label_width,label_height,image)
+    current_img=image
+    showimage = ImageTk.PhotoImage(image=image_resized)
+    labelshow.image= showimage
+    labelshow.configure(image= showimage)
+
+# reset image on click
+def reset_image():
+    global current_img
+    global original_img
+    current_img= original_img
+
+show_on_hover = HoverButton(canvas,  bg = "#1f1f1f", bd="0",text = "compare/reset here",fg ="white",activebackground  = "#FF6B26", command=lambda: reset_image())
+show_on_hover.place(x="1100", y="750", relwidth=".088", relheight=".05")
+show_on_hover.bind("<Enter>", show_on_enter)
+show_on_hover.bind("<Leave>", show_on_leave)
 
 ############################################################# Save Portion ##############################################################
 #save using top level for voice on progerss
@@ -1526,7 +1519,7 @@ if __name__ == "__main__":
     Auto gama correction
     merge images/add
     histogram
-    okey elements recognition
+    okey elements "do" recognition
     ruler
 
 ### try ###
