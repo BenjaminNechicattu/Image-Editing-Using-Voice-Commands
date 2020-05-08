@@ -37,6 +37,11 @@ from pocketsphinx import LiveSpeech                                             
 from pynput.keyboard import Key, Listener                                                                   ## detect keyboard press for shortcuts with listener
 from pynput import keyboard                                                                                 ## keyboard press for shortcut
 import random                                                                                               ## import random generator
+from tkinter import colorchooser                                                                            ## Choose Colour
+from tkinter.commondialog import Dialog
+## font chooser import
+from sys import platform                                                                                    ## platform details
+from tkfontchooser import askfont                                                                           ## import font chooser
 
 ############################################################### Class ####################################################################
 #Hover button Class 
@@ -53,15 +58,56 @@ class HoverButton(tkinter.Button):
     def on_leave(self, e):
         self['background'] = self.defaultBackground
 
+# option not used
+class MyOptionMenu(OptionMenu):
+    def __init__(self, master, status, *options):
+        self.var = StringVar(master)
+        self.var.set(status)
+        OptionMenu.__init__(self, master, self.var, *options)
+        self.config(font=('calibri',(10)),bg='#1a1a1a',width=16, activebackground="#2a2a2a", bd ="0", fg = "white")
+        self['menu'].config(font=('calibri',(10)),bg='#1a1a1a', bd = "0", fg = "white")
+
+# Colour Picker tkinter class
+# __all__ = ["Chooser", "askcolor"]
+class Chooser(Dialog):
+    "Ask for a color"
+
+    command = "tk_chooseColor"
+
+    def _fixoptions(self):
+        try:
+            # make sure initialcolor is a tk color string
+            color = self.options["initialcolor"]
+            if isinstance(color, tuple):
+                # assume an RGB triplet
+                self.options["initialcolor"] = "#%02x%02x%02x" % color
+        except KeyError:
+            pass
+
+    def _fixresult(self, widget, result):
+        # result can be somethings: an empty tuple, an empty string or
+        # a Tcl_Obj, so this somewhat weird check handles that
+        if not result or not str(result):
+            return None, None # canceled
+
+        # to simplify application code, the color chooser returns
+        # an RGB tuple together with the Tk color string
+        r, g, b = widget.winfo_rgb(result)
+        # return (r/256, g/256, b/256), str(result)
+        return str(result)
+
 ############################################################ Main Window #################################################################
 #define Main Window and configuration
 mainwin = tkinter.Tk()
 mixer.init()
 mainwin.geometry("1200x800+150+15")
 #mainwin.maxsize(1200,800)
+mainwin.resizable(FALSE,FALSE)                                                                             ## Disable resizing
 mainwin.title("Elements Voiced Image Editing")
 mainwin.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
 mainwin.configure(bg="#0d0d0d")
+# mainwin.iconify()
+# mainwin.deiconify()
 
 #canvas for workspace
 canvas = tkinter.Canvas(mainwin, width = 1200, height =800 ,bg="#0d0d0d", bd="0",borderwidth = "0", highlightthickness = "0", cursor="arrow" )
@@ -101,8 +147,8 @@ def connection():
             first_time = False
         internet_access = False
 
-#logo Button FunctionS
-def logobtn_clicked():
+# splash screen Function
+def splash_screen():
     random_number = str(random.randint(0, 21))
     logo_win = Toplevel(mainwin)
     img1_logo = Image.open(r"elements2.0Images/splashscreen/"+ random_number + ".png")
@@ -112,12 +158,31 @@ def logobtn_clicked():
     l1.pack()
     l1.photo=photo_logo
     
-    logo_win.title("Credits")
+    logo_win.title("Loading Assets")
     logo_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
     logo_win.geometry("900x563+400+200")
     logo_win.maxsize(900,563)
     logo_win.attributes('-topmost', 'true')                                                         ## bring savve window top and visible
+    logo_win.wm_overrideredirect(1)
     logo_win.after(3456, logo_win.destroy)
+
+#logo Button FunctionS
+def logobtn_clicked():
+    
+    logo_win = Toplevel(mainwin)
+    img1_logo = Image.open(r"elements2.0Images\assets\splashscreen.png")
+    img1_logo = img1_logo.resize((900,400), Image.ANTIALIAS)
+    photo_logo = ImageTk.PhotoImage(img1_logo)
+    l1= Label(logo_win, bg="grey", image=photo_logo)
+    l1.pack()
+    l1.photo=photo_logo
+    
+    logo_win.title("Credits")
+    logo_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
+    logo_win.geometry("900x400+400+200")
+    logo_win.maxsize(900,400)
+    logo_win.attributes('-topmost', 'true')                                                         ## bring window top and visible
+    logo_win.after(5000, logo_win.destroy)
 
 #logo button
 img_logo = Image.open(r"elements2.0Images\elementslogo.png")
@@ -133,15 +198,27 @@ connection()
 global current_img
 current_img = None
 
-#canvas where image shows 
+# canvas where image shows 
 canvas1 = Canvas(canvas, bg="black", bd="0", borderwidth = "0", highlightthickness = "0", cursor="plus")
 canvas1.place(x="30", y="30", relwidth="0.85", relheight="0.75")
 labelshow = Label(canvas1, bg="black", bd="0", borderwidth = "0", highlightthickness = "0",image= None)
 labelshow.pack(fill= BOTH)
 
-# calling  logobtn clicked for spalsh screen
-logobtn_clicked()
+# calling spalsh screen
+splash_screen()
 
+# color picker for board and text
+def askcolor(color = None, **options):
+    "Ask for a color"
+    global text_newcl_button
+    global text_colour
+    if color:
+        options = options.copy()
+        options["initialcolor"] = color
+
+    text_colour = Chooser(**options).show()
+    text_newcl_button.config(bg = text_colour)
+        
 # asks for import option function
 def import_options():
     global import_win
@@ -149,7 +226,8 @@ def import_options():
     import_win.title("Import image")
     import_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
     import_win.geometry("900x500+400+200")
-    import_win.maxsize(900,500)
+    # import_win.maxsize(900,500)
+    import_win.resizable(FALSE,FALSE)                                                                                          ## Disable resizing
     import_win.config(bg="#1c1c1c")
     import_win.grab_set()                                                                                                   ## prevent duplication of same window and block main window
     
@@ -806,14 +884,111 @@ button_filter.place(x="15", y="200")
 
 #add Text button
 def addtext_clicked():
-    print("on progress")
-    canvas_add_text = Canvas(canvas, bg ="gray", bd="0", borderwidth = "0", highlightthickness = "0" )
-    canvas_add_text.place(x="950", y="230", relwidth="0.123", relheight="0.45")
-
     global current_img
-    draw = ImageDraw.Draw(current_img)
-    content_get_label="content"
-    
+    if current_img != None:
+        print("on progress")
+        canvas_add_text = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0")
+        canvas_add_text.place(x="750", y="290", relwidth="0.25", relheight="0.42")
+        
+        # get text
+        get_text_label = Label(canvas_add_text, text = "enter text :", fg="white", bg = "#0d0d0d")
+        get_text_label.place(x="20", y="20")
+        get_text=Entry(canvas_add_text, bg="#1a1a1a" , bd="0", fg="white")
+        get_text.place(x="140", y="15", relwidth=".5", relheight="0.1")
+        
+        # get font size
+        get_font_size_label = Label(canvas_add_text, text = "enter font size :", fg="white", bg = "#0d0d0d")
+        get_font_size_label.place(x="20", y="60")
+        get_font_size=Entry(canvas_add_text,bg="#1a1a1a" , bd="0", fg="white")
+        get_font_size.place(x="140", y="55", relwidth=".5", relheight="0.1")
+
+        # choose font type and style
+        get_font_label = Label(canvas_add_text, text = "Select font :", fg="white", bg = "#0d0d0d")
+        get_font_label.place(x="20", y="100")
+        ## select_font_option = MyOptionMenu(canvas_add_text, 'Select Font', 'arial','impact','times new roman')
+        ## select_font_option.place(x="140", y="100")
+        selected_font_label = Label(canvas_add_text, text = "Select font :", fg="white", bg = "#0d0d0d")
+        selected_font_label.place(x="140", y="100")
+        select_font_button= tkinter.Button(canvas_add_text, bg ="gray",text="new", bd =".5",width= "3", height = "1", command =lambda: askcolor())
+        select_font_button.place(x="268", y="175")
+        
+        # get font colour
+        get_text_colour = Label(canvas_add_text, text = "Select font colour :", fg="white", bg = "#0d0d0d")
+        get_text_colour.place(x="20", y="140")
+        
+        def choose_colour(colour):
+            global text_colour
+            text_colour = colour
+            #sprint (text_colour)
+        
+        red_button = tkinter.Button(canvas_add_text, bg ="red", bd= ".5",width= "3", height = "1", command =lambda: choose_colour("red"))
+        red_button.place(x="140", y="145")
+        
+        blue_button = tkinter.Button(canvas_add_text, bg ="blue", bd =".5", width= "3", height = "1",command =lambda:  choose_colour("blue"))
+        blue_button.place(x="172", y="145")
+        
+        yellow_button= tkinter.Button(canvas_add_text, bg ="yellow", bd =".5",width= "3", height = "1",command =lambda:  choose_colour("yellow"))
+        yellow_button.place(x="204", y="145")
+        
+        green_button= tkinter.Button(canvas_add_text, bg ="green", bd =".5",width= "3", height = "1", command = lambda: choose_colour("green"))
+        green_button.place(x="236", y="145")
+        
+        violet_button= tkinter.Button(canvas_add_text, bg ="violet", bd =".5" ,width= "3", height = "1",command =lambda:  choose_colour("violet"))
+        violet_button.place(x="268", y="145")
+        
+        orange_button= tkinter.Button(canvas_add_text, bg ="orange", bd =".5" ,width= "3", height = "1",command =lambda:  choose_colour("orange"))
+        orange_button.place(x="140", y="175")
+        
+        black_button= tkinter.Button(canvas_add_text, bg ="black", bd =".5", width= "3", height = "1",command =lambda:  choose_colour("black"))
+        black_button.place(x="172", y="175")
+        
+        white_button= tkinter.Button(canvas_add_text, bg ="white", bd =".5",width= "3", height = "1", command =lambda:  choose_colour("white"))
+        white_button.place(x="204", y="175")
+
+        gray_button= tkinter.Button(canvas_add_text, bg ="gray", bd =".5",width= "3", height = "1", command =lambda:  choose_colour("white"))
+        gray_button.place(x="236", y="175")
+        
+        ## choose colour Manually
+        global text_newcl_button
+        text_newcl_button= tkinter.Button(canvas_add_text, bg ="gray",text="new", bd =".5",width= "3", height = "1", command =lambda: askcolor())
+        text_newcl_button.place(x="268", y="175")
+              
+    def apply():
+        global current_img
+        global text_colour
+        # get text
+        text = get_text.get()
+        print(text)
+        # text size
+        text_size = int(get_font_size.get())
+        print(text_size)
+        # font
+        cfont=str(select_font_option.var)
+        print (cfont)
+        # text colour
+        f_c =text_colour
+        print(f_c)
+        # apply font
+        draw = ImageDraw.Draw(current_img)
+        font = ImageFont.truetype(cfont+'.ttf', size=text_size)
+        draw.text((300, 300), text, fill=f_c, font=font)
+        
+        ## show image
+        image = draw
+        width, height = image.size
+        image_resized = resize_image(width, height,label_width,label_height,image)
+        text_added = ImageTk.PhotoImage(image=image_resized)
+        labelshow.image= text_added
+        labelshow.configure(image= text_added)
+        current_img=image
+        Undo.append(current_img)
+        
+        canvas_add_text.after(1000, canvas_add_text.destroy)
+        canvastoolbar.destroy
+        
+    button_apply_font = HoverButton(canvas_add_text,  bg = "#0d0d0d", bd="0", height = "1", width ="15",text = "Apply Font", compound= "left",fg ="gray",command=lambda:apply())
+    button_apply_font.place(x="20", y="300")
+   
 #add text function
 img_addtext = Image.open(r"elements2.0Images\assets\addtext.png")
 img_addtext = img_addtext.resize((30,32), Image.ANTIALIAS)
@@ -1161,7 +1336,7 @@ def reset_image():
     current_img= original_img
 
 show_on_hover = HoverButton(canvas,  bg = "#1f1f1f", bd="0",text = "compare/reset here",fg ="white",activebackground  = "#FF6B26", command=lambda: reset_image())
-show_on_hover.place(x="1100", y="750", relwidth=".088", relheight=".05")
+show_on_hover.place(x="1090", y="750", relwidth=".09", relheight=".05")
 show_on_hover.bind("<Enter>", show_on_enter)
 show_on_hover.bind("<Leave>", show_on_leave)
 
@@ -1213,7 +1388,8 @@ def save():
         save_win.title("Save image")
         save_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
         save_win.geometry("800x400+400+200")
-        save_win.maxsize(800,400)
+        # save_win.maxsize(800,400)
+        save_win.resizable(FALSE,FALSE)                                                                             ## Disable resizing
         save_win.config(bg="#1c1c1c")
         save_win.grab_set()                                                                                      ## prevent aditional save window opening
 
@@ -1432,7 +1608,7 @@ def on_closing():
     if messagebox.askokcancel("Quit", "Do you want to Stop Editing?"):
         mainwin.destroy()
 
-#listen for do!
+# listen for do!
 def do():
     for phrase in LiveSpeech(): 
         print(phrase)
@@ -1508,18 +1684,17 @@ if __name__ == "__main__":
     organise offline editing for indian slang
     customize keybord shortcuts
     mesed up Entry of values
+    add text
 
 ### to add ###
     active voice recognition
     independent value/parameter fetching over voice
     crop
-    add text
     Voiced File browser             
     Social share
     Auto gama correction
     merge images/add
     histogram
-    okey elements "do" recognition
     ruler
 
 ### try ###
