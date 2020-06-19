@@ -10,7 +10,7 @@
     #      ## IPython
     #      ## Speech Recognition
 
-######## !!!! Internet Access Required For Voice Activated Editing ###########
+###################################### !!!! Internet Access Required For Voice Activated Editing #########################################
 
 ############################################################## Imports ###################################################################
 import tkinter                                                                                              ## imports GUI Library
@@ -78,12 +78,12 @@ canvastoolbar=None
 said=None
 token = None
 
-                                                                                                    ## This is the code to setup and initialize pyttsx3 for text tp speech
+## This is the code to setup and initialize pyttsx3 for text tp speech
 engine=pyttsx3.init('sapi5')                                                                        ## sapi5 (by microsoft) is like gtts: google text to speech, by google 
 voices=engine.getProperty('voices') 
 engine.setProperty('voice',voices[0].id)                                                            ## here the voices list contain either 0 or 1 , voices[0] is male voice
 
-############################################################### Class ####################################################################
+############################################################################ Class #########################################################################
 #Hover button Class 
 class HoverButton(tkinter.Button):
     def __init__(self, master, **kw):
@@ -192,7 +192,6 @@ def listenitbackground(): ##This function is called in the thread.
             print("recognizer is active...Listening")            
             hello_label.config(text="Recognizer is active..I am Listening...")
             
-            
             with sr.Microphone() as source: ## we can tune the microphone input by setting sample rate and chunk size
                 print("Micophone is active")
                 
@@ -220,7 +219,6 @@ def listenitbackground(): ##This function is called in the thread.
             print("slept for 2 sec....")
             do_func_thread=threading.Thread(target=do_func(),args=(q,))
             do_func_thread.start()
-            
             time.sleep(1)
             
         except sr.UnknownValueError:
@@ -244,7 +242,7 @@ def do_func():
     global hello_label
     global tokens
     
-    keywords=["hi","hai","hello","close","exit","rotate","import","open","intensity","brightness", "crop", "smooth", "smooth more","effect","effects","rotate","backward","emboss", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast","flip", "details", "saturation", "undo", "redo", "warmth"] 
+    keywords=["hi","compare","blur", "Blur","hai","hello","help","close","exit","rotate","import","open","sharpness","intensity","brightness", "crop", "smooth", "smooth more","effect","effects","rotate","backward","emboss", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast","flip", "details", "saturation", "undo", "redo", "warmth"] 
                 
     if q.qsize():            
         tokens=word_tokenize(q.get())   ###q.get() is used to pop out what is in queue          
@@ -253,8 +251,8 @@ def do_func():
                 if i=="hello" or i=="hi":
                     print("Speech Recognizer is Listening......")
                     # hello_label.config(text=f"Hi I am root.......Welcome to Elements ....")
-                    # chat_value=f"Hi I am root.....Welcome to Elements........."
-                    # chat(chat_value)
+                    chat_value=f"Hi I am Groot.....Welcome to Elements........."
+                    chat(chat_value)
     
                 elif i=="close" or i=="exit": ###Take good care about the time.sleep since we should ajdust them to properly execute code properly
                     #############Here exiting is not working. May be because of threads are not dead or may be listening is not set to listening =0
@@ -271,62 +269,62 @@ def do_func():
                     print("Rotated")
                     rot_clicked()
                     hello_label.config(text=f"You said {i}...rotating...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
-                    chat(chat_value)
+                    #chat_value=f"You said {i}...I am listening for next task........................."
+                    #chat(chat_value)
 
                 elif i=="brightness" or i=="intensity":
                     brightness_clicked()
                     hello_label.config(text=f"You said {i}...changing brightness...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
-                    chat(chat_value)
+                    #chat_value=f"You said {i}...I am listening for next task........................."
+                    #chat(chat_value)
 
                 elif i=="crop":
                     crop_clicked()
                     hello_label.config(text=f"You said {i}...croping image...")
-                    chat_value=f"You said {i}...crop is under development...I am listening for next task........................."
-                    chat(chat_value)
+                    #chat_value=f"You said {i}...crop is under development...I am listening for next task........................."
+                    #chat(chat_value)
 
                 elif i=="smoooth more":
                     smooth_more_clicked()
                     hello_label.config(text=f"You said {i}...smoothifying image...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
+                    chat_value=f"You said {i}...I am listening........................."
                     chat(chat_value)
                     
                 elif i=="smooth":
                     smooth_clicked()
                     hello_label.config(text=f"You said {i}...smoothing image...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
+                    chat_value=f"You said {i}...I am listening........................"
                     chat(chat_value)
                     
                 elif i=="details":
                     detail_clicked()
                     hello_label.config(text=f"You said {i}...Detailing Image...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
+                    chat_value=f"You said {i}...I am listening........................"
                     chat(chat_value)
 
                 elif i=="sharpness":
                     sharpness_clicked()
                     hello_label.config(text=f"You said {i}...changing sharpness...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
+                    chat_value=f"You said {i}...I am listening........................."
                     chat(chat_value)
                     
                 elif i=="contrast":
                     contrast_clicked()
                     hello_label.config(text=f"You said {i}...varying contrast...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
-                    chat(chat_value)
+                    #chat_value=f"You said {i}...I am listening........................."
+                    #chat(chat_value)
                     
                 elif i=="flip":
                     flip_clicked()
                     hello_label.config(text=f"You said {i}...choose filp option...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
-                    chat(chat_value)
+                    #chat_value=f"You said {i}...I am listening for next task........................."
+                    #chat(chat_value)
                     
                 elif i=="filter" or i== "effects" or i=="effect":
                     filter_clicked()
                     hello_label.config(text=f"You said {i}...choose filters...")
-                    chat_value=f"You said {i}...I am listening for next task........................."
-                    chat(chat_value)
+                    #chat_value=f"You said {i}...I am listening for next task........................."
+                    #chat(chat_value)
                     
                 elif i=="blur":
                     blur_clicked()
@@ -344,7 +342,7 @@ def do_func():
                 elif i=="open" or i== "import":
                     import_clicked()
                     #Save = i
-                    hello_label.config(text=f"You said {i}...importing image to workspace...")
+                    hello_label.config(text=f"You said {i}...importing new image to workspace...")
                     chat_value=f"You said {i}...I am listening for next task........................."
                     chat(chat_value)
                     
@@ -361,13 +359,25 @@ def do_func():
                     hello_label.config(text=f"You said {i}...redoing...")
                     chat_value=f"You said {i}...I am listening for next task........................."
                     chat(chat_value)   
+                    
+                elif i=="help":
+                    chat_value= "hey there, i am Groot, I can help you."
+                    chat(chat_value)
+                    chat_value= "Just Say what you want to do. Say 'change brightness' to change brightness when recognizer is active."
+                    chat(chat_value)
+                
+                elif i=="compare":
+                    chat_value= "showing original image for 2 seconds"
+                    chat(chat_value)
+                    show_on_enter(True)
+                    time.sleep(2)
+                    show_on_leave(True)
                 
                 else:
                     print("Try Again...")
                     operation_label.config(text=f"You said something...I didn't understand...")
                     chat_value=f"You said something that I didn't understand...Try again.............................."
-                    chat(chat_value)
-    
+                    chat(chat_value)   
 
 def endApp():
     print("listening is set to 0")
@@ -382,13 +392,11 @@ def exit_func():
             sys.exit(1)
             mainwin.destroy()
 
-
-
 def maingui():
     global mainwin
     global operation_label
     global canvas
-    global chat_value
+    global chat
     global hello_label
     global rot_clicked
     global brightness_clicked
@@ -413,9 +421,10 @@ def maingui():
     global redo_clicked
     global save
     global import_clicked
+    global show_on_enter
+    global show_on_leave
     
-    
-    ############################################################ Main Window #################################################################
+    ####################################################################### Main Window ##########################################################################
     #define Main Window and configuration
     mainwin = tkinter.Tk()
     mixer.init()                                           
@@ -429,8 +438,6 @@ def maingui():
     #canvas for workspace
     canvas = tkinter.Canvas(mainwin, width = 1200, height =800 ,bg="#0d0d0d", bd="0",borderwidth = "0", highlightthickness = "0", cursor="arrow" )
     canvas.pack()
-    chat_value="Welcome to Elements"
-    chat(chat_value)
     hello_label=Label(mainwin,bg="#0d0d0d",bd="1",highlightthickness="1",fg="white",text="Welcome to Elements")
     hello_label.pack(side=BOTTOM)
     # operation_label=Label(canvas,text=None,fg="Red")
@@ -454,7 +461,7 @@ def maingui():
         logo_win.geometry("900x400+400+200")
         logo_win.maxsize(900,400)
         logo_win.attributes('-topmost', 'true')                                                         ## bring window top and visible
-        logo_win.after(5000, logo_win.destroy)
+        logo_win.after(2000, logo_win.destroy)
 
     #logo button
     img_logo = Image.open(r"elements2.0Images\elementslogo.png")
@@ -748,6 +755,8 @@ def maingui():
         Undo.append(current_img)
         import_win.destroy()
         #return current_img
+        listen_thread=threading.Thread(target=listenitbackground)##listenit thread is started.
+        listen_thread.start()
 
     # import button         
     img_import = Image.open(r"elements2.0Images\assets\save.png")
@@ -755,7 +764,6 @@ def maingui():
     img_import1 = ImageTk.PhotoImage(img_import)
     button_import = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_import1,activebackground="#FF6B26" , command = lambda : import_options())
     button_import.place(x="10", y="695", relwidth=".05", relheight=".05")
-
 
     #Textbox to get input from the user!!
     textBox=Text(canvas,height=2, width=10, bg="#1a1a1a" , bd="0", fg="white")
@@ -834,17 +842,36 @@ def maingui():
         global tokens
         global hello_label
         global chat
-        if current_img:
-            
+        if current_img: 
             try:
                 br=float(retrieve_input())
             except:
-                hello_label.config( text = "parameter not found")
-                chat_value="parameter not found in retrive"
-                chat(chat_value)
+                # hello_label.config( text = "parameter not found")
+                # chat_value="parameter not found in retrive"
+                # chat(chat_value)
+                brightness_operations = ["increase", "reduce", "change", "decrease"]
                 for parameter in tokens:
                     if parameter.isdigit():
-                        br = float(parameter)
+                        br1 = float(parameter)
+                        br = (br1/10)
+                        say_parameter = str (parameter)
+                        chat_value=f"changing Brightness to {say_parameter} times"
+                        chat(chat_value)
+                    elif parameter in brightness_operations:
+                        if parameter == "increase":
+                            br = 1.1
+                            chat_value="Increasing brightness"
+                            chat(chat_value)
+                        elif parameter =="decrease" or parameter == "reduce":
+                            br = 0.9
+                            chat_value="Reducing brightness"
+                            chat(chat_value)
+                        else:
+                            br = 1
+                            chat_value="didn't get the parameter, you have to pass a value along"
+                            chat(chat_value)
+                            chat_value="Or say Increase or Reduce brightness"
+                            chat(chat_value)
             
             img=ImageEnhance.Brightness(current_img)
             image=img.enhance(br)
@@ -867,9 +894,40 @@ def maingui():
 
     #rotatae button Function
     def rot_clicked():
-        global current_img  
+        global current_img
+        global tokens
+        global hello_label
+        global chat
         if current_img:
-            angle=retrieve_input()   
+            try:
+                angle=float(retrieve_input())
+            except:
+                # hello_label.config( text = "parameter not found")
+                # chat_value="parameter not found in retrive"
+                # chat(chat_value)
+                rotate_operations = ["left","change", "right"]
+                for parameter in tokens:
+                    if parameter.isdigit():
+                        angle = float(parameter)
+                        say_parameter = str (parameter)
+                        chat_value=f"rotating to {say_parameter} degree"
+                        chat(chat_value)
+                    elif parameter in rotate_operations:
+                        if parameter == "right":
+                            angle = -90
+                            chat_value="rotating right"
+                            chat(chat_value)
+                        elif parameter =="left":
+                            angle = 90
+                            chat_value="rotating left"
+                            chat(chat_value)
+                        else:
+                            angle = 0
+                            chat_value="didn't get the parameter, you have to pass a value along"
+                            chat(chat_value)
+                            chat_value="Or say rotate left or right"
+                            chat(chat_value)
+             
             image= current_img.rotate(float(angle),expand=1)
             width, height = image.size
             image_resized = resize_image(width, height,label_width,label_height,image)
@@ -890,6 +948,8 @@ def maingui():
     #crop Function
     def crop_clicked():
         global current_img
+        chat_value= "Sorry for the inconvinience, crop function is still devoloping."
+        chat(chat_value)
         width, height = current_img.size 
         #print ("Current size of image is", width, height) 
         print (" You need to Specify the Parameters of crop in pixels") 
@@ -945,8 +1005,40 @@ def maingui():
     #sharpness Function
     def sharpness_clicked():
         global current_img
+        global tokens
+        global hello_label
+        global chat
+        
         if current_img:
-            sp = retrieve_input()
+            try:
+                sp=float(retrieve_input())
+            except:
+                # hello_label.config( text = "parameter not found")
+                # chat_value="parameter not found in retrive"
+                # chat(chat_value)
+                sharpness_operations = ["increase", "reduce", "change", "decrease"]
+                for parameter in tokens:
+                    if parameter.isdigit():
+                        sp = float(parameter)
+                        say_parameter = str (parameter)
+                        chat_value=f"changing sharpness to {say_parameter} times"
+                        chat(chat_value)
+                    elif parameter in sharpness_operations:
+                        if parameter == "increase":
+                            sp = 1.1
+                            chat_value="Increasing sharpness"
+                            chat(chat_value)
+                        elif parameter =="decrease" or parameter == "reduce":
+                            sp = 0.9
+                            chat_value="Reducing brightness"
+                            chat(chat_value)
+                        else:
+                            sp = 1
+                            chat_value="didn't get the parameter, you have to pass a value along"
+                            chat(chat_value)
+                            chat_value="Or say Increase or Reduce sharpness"
+                            chat(chat_value)
+            
             print (sp)
             imbr = ImageEnhance.Sharpness(current_img)
             image = imbr.enhance(int (sp))
@@ -957,8 +1049,8 @@ def maingui():
             labelshow.configure(image= sharpness_img)
             current_img=image
             Undo.append(current_img)
-            canvasfilter.destroy()
-            #return current_img
+            # canvasfilter.destroy()
+            # return current_img
         
     #blur Function
     def blur_clicked():
@@ -972,7 +1064,7 @@ def maingui():
             labelshow.configure(image= blur_img)
             current_img=image
             Undo.append(current_img)
-            #return current_img
+            # return current_img
 
     #enhance Function
     def enhance_clicked():
@@ -986,7 +1078,7 @@ def maingui():
             labelshow.configure(image= enh_img)
             current_img=image
             Undo.append(current_img)
-            #return current_img
+            # return current_img
 
     #smooth Function
     def smooth_clicked():
@@ -1077,6 +1169,10 @@ def maingui():
     def filter_clicked():
         #filter canvas
         global canvasfilter
+
+        chat_value= "You might want to choose a filter."
+        chat(chat_value)
+        
         if current_img:
             canvasfilter = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
             canvasfilter.place(x="950", y="230", relwidth="0.123", relheight="0.45")
@@ -1167,6 +1263,8 @@ def maingui():
         global current_img
         if current_img != None:
             print("on progress")
+            chat_value= "Sorry for the inconvinience, Add text function is still devoloping."
+            chat(chat_value)
             canvas_add_text = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0")
             canvas_add_text.place(x="750", y="290", relwidth="0.25", relheight="0.42")
             
@@ -1279,8 +1377,41 @@ def maingui():
     #contrast button function
     def contrast_clicked():
         global current_img
-        if current_img:
-            br=retrieve_input()
+        global tokens
+        global hello_label
+        global chat
+        
+        if current_img: 
+            try:
+                br=float(retrieve_input())
+            except:
+                # hello_label.config( text = "parameter not found")
+                # chat_value="parameter not found in retrive"
+                # chat(chat_value)
+                brightness_operations = ["increase", "reduce", "change", "decrease"]
+                for parameter in tokens:
+                    if parameter.isdigit():
+                        br1 = float(parameter)
+                        br = (br1/10)
+                        say_parameter = str (parameter)
+                        chat_value=f"changing Brightness to {say_parameter} times"
+                        chat(chat_value)
+                    elif parameter in brightness_operations:
+                        if parameter == "increase":
+                            br = 1.1
+                            chat_value="Increasing brightness"
+                            chat(chat_value)
+                        elif parameter =="decrease" or parameter == "reduce":
+                            br = 0.9
+                            chat_value="Reducing brightness"
+                            chat(chat_value)
+                        else:
+                            br = 1
+                            chat_value="didn't get the parameter, you have to pass a value along"
+                            chat(chat_value)
+                            chat_value="Or say Increase or Reduce brightness"
+                            chat(chat_value)
+
             print (br)
             imbr = ImageEnhance.Contrast(current_img)
             image = imbr.enhance(float (br))
@@ -1332,6 +1463,9 @@ def maingui():
     def flip_clicked():
         #flip canvas
         global current_img
+        chat_value= "You can flip Up-Down or Left-Right"
+        chat(chat_value)
+        
         if current_img:
             canvasflip = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
             canvasflip.place(x="950", y="380", relwidth="0.123", relheight="0.1")
@@ -1362,8 +1496,41 @@ def maingui():
     #saturation function
     def saturation_clicked():
         global current_img
-        if current_img:
-            br=retrieve_input()
+        global tokens
+        global hello_label
+        global chat
+        
+        if current_img: 
+            try:
+                br=float(retrieve_input())
+            except:
+                # hello_label.config( text = "parameter not found")
+                # chat_value="parameter not found in retrive"
+                # chat(chat_value)
+                saturation_operations = ["increase", "reduce", "change", "decrease"]
+                for parameter in tokens:
+                    if parameter.isdigit():
+                        br1 = float(parameter)
+                        br = (br1/10)
+                        say_parameter = str (parameter)
+                        chat_value=f"changing saturation to {say_parameter} times"
+                        chat(chat_value)
+                    elif parameter in saturation_operations:
+                        if parameter == "increase":
+                            br = 1.1
+                            chat_value="Increasing saturation"
+                            chat(chat_value)
+                        elif parameter =="decrease" or parameter == "reduce":
+                            br = 0.9
+                            chat_value="Reducing saturation"
+                            chat(chat_value)
+                        else:
+                            br = 1
+                            chat_value="didn't get the parameter, you have to pass a value along"
+                            chat(chat_value)
+                            chat_value="Or say Increase or Reduce saturation"
+                            chat(chat_value)
+            
             print (br)
             imbr = ImageEnhance.Color(current_img)
             image = imbr.enhance(int (br))
@@ -1470,7 +1637,6 @@ def maingui():
                 value = (str(phrase))
                 break
         return value"""
-
 
     def listenit():
         r = speech_recognition.Recognizer()
@@ -1599,7 +1765,7 @@ def maingui():
     button_mic = HoverButton(canvas,  bg = "#0d0d0d", bd="0", image=img_mic1, activebackground='#0d0d0d',cursor="hand2" ,command =  lambda: mic_activate())
     button_mic.place(x="550", y="700", relwidth=".075", relheight=".09")
 
-    ############################################################ Play Button ##################################################################
+    ##################################################################### Play Button ##################################################################
 
     # to shows import error
     import_label=Label(canvas1,fg="white",bg="black",text=None)
@@ -1635,9 +1801,10 @@ def maingui():
     show_on_hover.bind("<Enter>", show_on_enter)
     show_on_hover.bind("<Leave>", show_on_leave)
 
-    ############################################################# Save Portion ##############################################################
+    ##################################################################### Save Portion #################################################################
     #save using top level for voice on progerss
     def saved():                                                                                           ## image Saved confirmation stay or leave??
+        global chat
         saved_win = Toplevel(mainwin)
         saved_win.title("Image Saved")
         saved_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
@@ -1662,6 +1829,9 @@ def maingui():
         confirm_label.place(x="190",y="60")
         confirm_label=Label(saved_win,fg="white",bg="#1c1c1c",text="Do you want to Continue Editing?", font=("", 10))
         confirm_label.place(x="150",y="90")
+
+        chat_value= "Do you Want to Continue?"
+        chat(chat_value)
 
         # Continue button
         Cont_button = HoverButton(saved_win,  bg = "#0d0d0d", bd="0", text = "Continue", compound= "left",fg ="gray",width ="13", height ="2",command=lambda: saved_win.destroy())
@@ -1963,19 +2133,30 @@ def maingui():
     listener = keyboard.Listener(on_press=on_press,on_release=on_release)
     listener.start()
 
-
-
     #clossing protocol
     mainwin.protocol("WM_DELETE_WINDOW", on_closing)
     
-    
-    time.sleep(5)##when time.sleep called the main thread executing till the sleep function stops for 3 secs and listen thread is called
-    # chat_value="Welcome to elements...."  ###this say welcome by calling the chat() function below
-    #                                     ###global chat_value is passed as parameter
-    
+    # time.sleep(5)  
+    # when time.sleep called the main thread executing till the sleep function stops for 3 secs and listen thread is called
+    # chat_value="Welcome to elements...."  ### this say welcome by calling the chat() function below
+    #                                       ### global chat_value is passed as parameter
     # chat(chat_value)
-    listen_thread=threading.Thread(target=listenitbackground)##listenit thread is started.
-    listen_thread.start()
+    # listen_thread starts now when image is imported
+    # listen_thread=threading.Thread(target=listenitbackground)##listenit thread is started.
+    # listen_thread.start()
+    
+    # first introduction of Groot
+    chat_value="hi, I am Groot, Welcome to Elements"
+    chat(chat_value)
+    
+    # check connection status and say it
+    if con_status:
+        chat_value="Connection established"
+        chat(chat_value)
+    else:
+        chat_value="Connection not available"
+        chat(chat_value)
+        
     mainwin.mainloop()
     #main loop
 
@@ -1983,6 +2164,7 @@ if __name__ == "__main__":
     
     def connection():
         #global contentlabels
+        global con_status
         canvasstatus = Canvas(l1, bg ="white", bd="0", borderwidth = "0", highlightthickness = "0" )
         canvasstatus.grid(sticky=NE)
         #check status
@@ -1990,19 +2172,24 @@ if __name__ == "__main__":
         try:
             urllib.request.urlopen(host)
             print("connected")
+            con_status = True
             connectionLabel1=Label(canvasstatus,fg="black",text="Connection Established...voice enabled!")
             connectionLabel1.pack()
             contentlabel=Label(canvasstatus,fg="black",text="",bg="white")
             contentlabel.pack()
+        #    chat_value="Connected to internet"
+        #    chat(chat_value)
             
         except:
             print("not_connected")
+            con_status = False
             connectionLabel1=Label(canvasstatus,bg="#0d0d0d",fg="black",text="NoConnection Err: 404!...Enable Internet connection or continue without voice")
             connectionLabel1.pack()
             contentlabel=Label(canvasstatus,bg="white",fg="black",text="")
             contentlabel.pack()
+        #    chat_value="No internet Access"
+        #    chat(chat_value)
 
-    
     random_number = str(random.randint(0, 21))
     splash_win = tkinter.Tk()
     # mixer.init
@@ -2013,7 +2200,7 @@ if __name__ == "__main__":
     l1.pack(fill=BOTH,expand=1)
     l1.photo=splash_img1
        
-    #splash_win.title("Loading Assets")
+    # splash_win.title("Loading Assets")
     # splash_win.iconbitmap(r"elements2.0Images\logofull2_1TB_icon.ico")
     splash_win.geometry("900x563+480+175") 
     splash_win.maxsize(900,563)
@@ -2022,9 +2209,10 @@ if __name__ == "__main__":
     splash_win.after(5000, splash_win.destroy)
     connection()
     splash_win.mainloop()
-    
+        
     # main_gui_thread= threading.Thread(target=maingui(),daemon=True)
     # main_gui_thread.start()
+    
     maingui()
 
 ############################################################################################################################################################
@@ -2035,13 +2223,10 @@ if __name__ == "__main__":
     board size not right
     organise offline editing for indian slang
     customize keybord shortcuts
-    mesed up Entry of values
     add text
-    rotating in 60 image retract 
+    rotating in 60 degree image retract 
 
 ### to add ###
-    active voice recognition
-    independent value/parameter fetching over voice
     crop
     Voiced File browser             
     Social share
@@ -2057,11 +2242,11 @@ if __name__ == "__main__":
                 https://subscription.packtpub.com/book/web_development/9781788622301/1/ch01lvl1sec20/handling-mouse-and-keyboard-events
 """
 
-############################################################################## 01_May_2020 ###############################################################
+############################################################################## 18_June_2020 ###############################################################
 
-    ######################################################################################################################################################
+    #######################################################################################################################################################
 
-    ##############################################################cerdits #######################################################
+    ##############################################################Cerdits #######################################################
     ##########################################################Congratulations####################################################
 
     ############################# Done Maria James                      : UI/ UX Development/ Programming       #################
@@ -2076,4 +2261,4 @@ if __name__ == "__main__":
     #######################################################################################################################################################
     #######################################################################################################################################################
 
-################################################################ © Elements® Private Limited 2020 ##########################################################
+#################################################################### © Elements® Limited 2019-2020 ########################################################
