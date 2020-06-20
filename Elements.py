@@ -242,7 +242,7 @@ def do_func():
     global hello_label
     global tokens
     
-    keywords=["hi","compare","blur", "Blur","hai","hello","help","close","exit","rotate","import","open","sharpness","intensity","brightness", "crop", "smooth", "smooth more","effect","effects","rotate","backward","emboss", "undo","redo","back","next","forward","filter", "contour", "save", "quit","exit", "add text", "contrast","flip", "details", "saturation", "undo", "redo", "warmth"] 
+    keywords=["hi","compare","blur","reset", "Blur","hai","hello","help","close","exit","rotate","import","open","sharpness","intensity","brightness", "crop", "smooth", "smooth more","effect","effects","rotate","backward","emboss", "undo","redo","back","next","forward","filter", "black","white", "contour", "save", "quit","exit", "add text", "contrast","flip", "details", "saturation", "undo", "redo", "warmth"] 
                 
     if q.qsize():            
         tokens=word_tokenize(q.get())   ###q.get() is used to pop out what is in queue          
@@ -278,6 +278,12 @@ def do_func():
                     #chat_value=f"You said {i}...I am listening for next task........................."
                     #chat(chat_value)
 
+                elif i=="black":
+                    black_and_White_clicked()
+                    #hello_label.config(text=f"You said {i}...changing brightness...")
+                    #chat_value=f"You said {i}...I am listening for next task........................."
+                    #chat(chat_value)
+
                 elif i=="crop":
                     crop_clicked()
                     hello_label.config(text=f"You said {i}...croping image...")
@@ -293,19 +299,25 @@ def do_func():
                 elif i=="smooth":
                     smooth_clicked()
                     hello_label.config(text=f"You said {i}...smoothing image...")
-                    chat_value=f"You said {i}...I am listening........................"
+                    chat_value=f"You said {i}....."
                     chat(chat_value)
                     
                 elif i=="details":
                     detail_clicked()
                     hello_label.config(text=f"You said {i}...Detailing Image...")
-                    chat_value=f"You said {i}...I am listening........................"
+                    chat_value=f"You said {i}....."
                     chat(chat_value)
 
                 elif i=="sharpness":
                     sharpness_clicked()
                     hello_label.config(text=f"You said {i}...changing sharpness...")
-                    chat_value=f"You said {i}...I am listening........................."
+                    chat_value=f"You said {i}..."
+                    chat(chat_value)
+
+                elif i=="saturation":
+                    saturation_clicked()
+                    hello_label.config(text=f"You said {i}...changing saturation...")
+                    chat_value=f"You said {i}..."
                     chat(chat_value)
                     
                 elif i=="contrast":
@@ -329,6 +341,18 @@ def do_func():
                 elif i=="blur":
                     blur_clicked()
                     hello_label.config(text=f"You said {i}...Bluring Image...")
+                    chat_value=f"You said {i}...I am listening for next task........................."
+                    chat(chat_value)
+                    
+                elif i=="emboss":
+                    emboss_clicked()
+                    hello_label.config(text=f"You said {i}...embossing Image...")
+                    chat_value=f"You said {i}...I am listening for next task........................."
+                    chat(chat_value)
+                    
+                elif i=="contour":
+                    contour_clicked()
+                    hello_label.config(text=f"You said {i}...applying contour to Image...")
                     chat_value=f"You said {i}...I am listening for next task........................."
                     chat(chat_value)
                     
@@ -372,10 +396,15 @@ def do_func():
                     show_on_enter(True)
                     time.sleep(2)
                     show_on_leave(True)
+                    
+                elif i=="reset":
+                    chat_value= "reseting image"
+                    chat(chat_value)
+                    reset_image()
                 
                 else:
                     print("Try Again...")
-                    operation_label.config(text=f"You said something...I didn't understand...")
+                    #operation_label.config(text=f"You said something...I didn't understand...")
                     chat_value=f"You said something that I didn't understand...Try again.............................."
                     chat(chat_value)   
 
@@ -423,6 +452,7 @@ def maingui():
     global import_clicked
     global show_on_enter
     global show_on_leave
+    global reset_image
     
     ####################################################################### Main Window ##########################################################################
     #define Main Window and configuration
@@ -849,7 +879,7 @@ def maingui():
                 # hello_label.config( text = "parameter not found")
                 # chat_value="parameter not found in retrive"
                 # chat(chat_value)
-                brightness_operations = ["increase", "reduce", "change", "decrease"]
+                brightness_operations = ["increase", "reduce", "decrease"]
                 for parameter in tokens:
                     if parameter.isdigit():
                         br1 = float(parameter)
@@ -859,20 +889,26 @@ def maingui():
                         chat(chat_value)
                     elif parameter in brightness_operations:
                         if parameter == "increase":
-                            br = 1.1
+                            br = 1.3
                             chat_value="Increasing brightness"
                             chat(chat_value)
                         elif parameter =="decrease" or parameter == "reduce":
-                            br = 0.9
+                            br = 0.7
                             chat_value="Reducing brightness"
                             chat(chat_value)
-                        else:
-                            br = 1
-                            chat_value="didn't get the parameter, you have to pass a value along"
-                            chat(chat_value)
-                            chat_value="Or say Increase or Reduce brightness"
-                            chat(chat_value)
-            
+                    elif parameter =="brightness":
+                        pass
+                    else:
+                        br = 1
+                        chat_value="didn't get the parameter, you have to pass a value along"
+                        chat(chat_value)
+                        chat_value="Or say Increase or Reduce brightness"
+                        chat(chat_value)
+            try:
+                print (br)
+            except:
+                br = 1
+                
             img=ImageEnhance.Brightness(current_img)
             image=img.enhance(br)
             width, height = image.size
@@ -905,7 +941,7 @@ def maingui():
                 # hello_label.config( text = "parameter not found")
                 # chat_value="parameter not found in retrive"
                 # chat(chat_value)
-                rotate_operations = ["left","change", "right"]
+                rotate_operations = ["left","change","rotate", "right"]
                 for parameter in tokens:
                     if parameter.isdigit():
                         angle = float(parameter)
@@ -921,13 +957,20 @@ def maingui():
                             angle = 90
                             chat_value="rotating left"
                             chat(chat_value)
-                        else:
-                            angle = 0
-                            chat_value="didn't get the parameter, you have to pass a value along"
-                            chat(chat_value)
-                            chat_value="Or say rotate left or right"
-                            chat(chat_value)
-             
+                    elif parameter =="rotate":
+                        pass
+                    else:
+                        angle = 0
+                        chat_value="didn't get the parameter, you have to pass a value along"
+                        chat(chat_value)
+                        chat_value="Or say rotate left or right"
+                        chat(chat_value)
+                
+            try:
+                print (angle)
+            except:
+                angle = 0
+                
             image= current_img.rotate(float(angle),expand=1)
             width, height = image.size
             image_resized = resize_image(width, height,label_width,label_height,image)
@@ -1016,7 +1059,7 @@ def maingui():
                 # hello_label.config( text = "parameter not found")
                 # chat_value="parameter not found in retrive"
                 # chat(chat_value)
-                sharpness_operations = ["increase", "reduce", "change", "decrease"]
+                sharpness_operations = ["increase", "reduce", "decrease"]
                 for parameter in tokens:
                     if parameter.isdigit():
                         sp = float(parameter)
@@ -1025,21 +1068,26 @@ def maingui():
                         chat(chat_value)
                     elif parameter in sharpness_operations:
                         if parameter == "increase":
-                            sp = 1.1
+                            sp = 1.5
                             chat_value="Increasing sharpness"
                             chat(chat_value)
                         elif parameter =="decrease" or parameter == "reduce":
-                            sp = 0.9
-                            chat_value="Reducing brightness"
+                            sp = 0.8
+                            chat_value="Reducing sharpness"
                             chat(chat_value)
-                        else:
-                            sp = 1
-                            chat_value="didn't get the parameter, you have to pass a value along"
-                            chat(chat_value)
-                            chat_value="Or say Increase or Reduce sharpness"
-                            chat(chat_value)
-            
-            print (sp)
+                    elif parameter =="sharpness":
+                        pass
+                    else:
+                        sp = 1
+                        chat_value="didn't get the parameter, you have to pass a value along"
+                        chat(chat_value)
+                        chat_value="Or say Increase or Reduce sharpness"
+                        chat(chat_value)
+            try:
+                print (sp)
+            except:
+                sp = 1
+
             imbr = ImageEnhance.Sharpness(current_img)
             image = imbr.enhance(int (sp))
             width, height = image.size
@@ -1263,7 +1311,7 @@ def maingui():
         global current_img
         if current_img != None:
             print("on progress")
-            chat_value= "Sorry for the inconvinience, Add text function is still devoloping."
+            chat_value= "Sorry for the inconvinience, Add text function is still devoloping. working with default values"
             chat(chat_value)
             canvas_add_text = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0")
             canvas_add_text.place(x="750", y="290", relwidth="0.25", relheight="0.42")
@@ -1341,7 +1389,7 @@ def maingui():
             text_size = int(get_font_size.get())
             print(text_size)
             # font
-            cfont=str(select_font_option.var)
+            cfont="impact"
             print (cfont)
             # text colour
             f_c =text_colour
@@ -1349,16 +1397,17 @@ def maingui():
             # apply font
             draw = ImageDraw.Draw(current_img)
             font = ImageFont.truetype(cfont+'.ttf', size=text_size)
-            draw.text((300, 300), text, fill=f_c, font=font)
+            draw.text((400, 300), text, fill=f_c, font=font)
             
             ## show image
-            image = draw
+            image = current_img
             width, height = image.size
             image_resized = resize_image(width, height,label_width,label_height,image)
+            current_img=image
             text_added = ImageTk.PhotoImage(image=image_resized)
+            #current_img=image
             labelshow.image= text_added
             labelshow.configure(image= text_added)
-            current_img=image
             Undo.append(current_img)
             
             canvas_add_text.after(1000, canvas_add_text.destroy)
@@ -1388,31 +1437,37 @@ def maingui():
                 # hello_label.config( text = "parameter not found")
                 # chat_value="parameter not found in retrive"
                 # chat(chat_value)
-                brightness_operations = ["increase", "reduce", "change", "decrease"]
+                brightness_operations = ["increase", "reduce", "decrease"]
                 for parameter in tokens:
                     if parameter.isdigit():
                         br1 = float(parameter)
                         br = (br1/10)
                         say_parameter = str (parameter)
-                        chat_value=f"changing Brightness to {say_parameter} times"
+                        chat_value=f"changing contrast to {say_parameter} times"
                         chat(chat_value)
                     elif parameter in brightness_operations:
                         if parameter == "increase":
-                            br = 1.1
-                            chat_value="Increasing brightness"
+                            br = 1.3
+                            chat_value="Increasing contrast"
                             chat(chat_value)
                         elif parameter =="decrease" or parameter == "reduce":
-                            br = 0.9
-                            chat_value="Reducing brightness"
+                            br = 0.8
+                            chat_value="Reducing contrast"
                             chat(chat_value)
-                        else:
-                            br = 1
-                            chat_value="didn't get the parameter, you have to pass a value along"
-                            chat(chat_value)
-                            chat_value="Or say Increase or Reduce brightness"
-                            chat(chat_value)
+                    elif parameter =="contrast":
+                        pass
+                    else:
+                        br = 1
+                        chat_value="didn't get the parameter, you have to pass a value along"
+                        chat(chat_value)
+                        chat_value="Or say Increase or Reduce contrast"
+                        chat(chat_value)
 
-            print (br)
+            try:
+                print (br)
+            except:
+                br = 1
+
             imbr = ImageEnhance.Contrast(current_img)
             image = imbr.enhance(float (br))
             width, height = image.size
@@ -1434,7 +1489,8 @@ def maingui():
     #flip right-lrft funtion
     def flip_right_clicked():
         global current_img
-        if current_img:
+        
+        if current_img:                   
             image = current_img.transpose(method=Image.FLIP_LEFT_RIGHT)
             width, height = image.size
             image_resized = resize_image(width, height,label_width,label_height,image)
@@ -1467,6 +1523,19 @@ def maingui():
         chat(chat_value)
         
         if current_img:
+            try:
+                sp=float(retrieve_input())
+            except:
+                # hello_label.config( text = "parameter not found")
+                # chat_value="parameter not found in retrive"
+                # chat(chat_value)
+                sharpness_operations = ["up", "right"]
+                for parameter in tokens:
+                    if parameter == "up":
+                        flip_top_clicked()
+                    elif parameter == "right":
+                        flip_right_clicked()
+                        
             canvasflip = Canvas(canvas, bg ="#0d0d0d", bd="0", borderwidth = "0", highlightthickness = "0" )
             canvasflip.place(x="950", y="380", relwidth="0.123", relheight="0.1")
             canvasflip.after(2000, canvasflip.destroy)
@@ -1507,33 +1576,38 @@ def maingui():
                 # hello_label.config( text = "parameter not found")
                 # chat_value="parameter not found in retrive"
                 # chat(chat_value)
-                saturation_operations = ["increase", "reduce", "change", "decrease"]
+                saturation_operations = ["increase","reduce", "decrease"]
                 for parameter in tokens:
                     if parameter.isdigit():
-                        br1 = float(parameter)
-                        br = (br1/10)
+                        br = float(parameter)
                         say_parameter = str (parameter)
                         chat_value=f"changing saturation to {say_parameter} times"
                         chat(chat_value)
                     elif parameter in saturation_operations:
                         if parameter == "increase":
-                            br = 1.1
+                            br = 1.4
                             chat_value="Increasing saturation"
                             chat(chat_value)
                         elif parameter =="decrease" or parameter == "reduce":
-                            br = 0.9
+                            br = 0.7
                             chat_value="Reducing saturation"
                             chat(chat_value)
-                        else:
-                            br = 1
-                            chat_value="didn't get the parameter, you have to pass a value along"
-                            chat(chat_value)
-                            chat_value="Or say Increase or Reduce saturation"
-                            chat(chat_value)
+                    elif parameter =="saturation":
+                        pass
+                    else:
+                        br = 1
+                        chat_value="didn't get the parameter, you have to pass a value along"
+                        chat(chat_value)
+                        chat_value="Or say Increase or Reduce saturation"
+                        chat(chat_value)
             
-            print (br)
+            try:
+                print (br)
+            except:
+                br = 1
+                
             imbr = ImageEnhance.Color(current_img)
-            image = imbr.enhance(int (br))
+            image = imbr.enhance(br)
             width, height = image.size
             image_resized = resize_image(width, height,label_width,label_height,image)
             cntrst_img = ImageTk.PhotoImage(image=image_resized)
@@ -1974,7 +2048,8 @@ def maingui():
 
             # Save Mic button
             activate_voice_label=Label(save_win,fg="white",bg="#1c1c1c",text="Activate Voice")                  ## label  activate voice
-            activate_voice_label.place(x="380",y="348") 
+            activate_voice_label.place(x="380",y="348")
+             
             img_mic2 = Image.open(r"elements2.0Images\assets\mic.png")
             img_mic2 = img_mic2.resize((33,36), Image.ANTIALIAS)
             img_mic12 = ImageTk.PhotoImage(img_mic2)
@@ -2109,11 +2184,9 @@ def maingui():
                 brightness_clicked()
             elif key.char == 'T':
                 addtext_clicked()
-            elif key.char == 'C':
-                crop_clicked()
-            elif key.char == 'S':
-                sharpness_clicked()
             elif key.char == 'c':
+                crop_clicked()
+            elif key.char == 'C':
                 contrast_clicked()
             elif key.char == 'q':
                 smooth_clicked()
@@ -2121,6 +2194,16 @@ def maingui():
                 flip_right_clicked()
             elif key.char == 'F':
                 flip_top_clicked()
+            elif key.char == '/':
+                undo_clicked()
+            elif key.char == 'B':
+                blur_clicked()
+            elif key.char == 'e':
+                emboss_clicked()
+            elif key.char == 'F':
+                flip_top_clicked()
+            elif key.char == 'S':
+                saturation_clicked()
 
         except AttributeError:
             print('special key {0} released'.format(key))
@@ -2133,7 +2216,7 @@ def maingui():
     listener = keyboard.Listener(on_press=on_press,on_release=on_release)
     listener.start()
 
-    #clossing protocol
+    # clossing protocol
     mainwin.protocol("WM_DELETE_WINDOW", on_closing)
     
     # time.sleep(5)  
