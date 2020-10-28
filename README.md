@@ -102,6 +102,9 @@ Google speech recognition engine coverts the speech that is captured to the corr
 -1) Extract the files in a folder
 -2) Execute pyhton file _elements.py_
 
+Now the program is able to reply to you. Groot now Assists you in editing the Images with Elements. This is made possible by pyttsx3.
+
+
 # Conclusion
 We introduced **ELEMENTS**, A multimodal interface system to support image editing tasks through voice and direct manipulation. Other than editing functionalities "Elements" is enabled with a browsing of an image as well as saving an image after editing. We can browse our file manager or even the internet by using appropriate voice commands. After editing the procedure is the complete user can save the image using the "save" command and we can specify the appropriate location as well as the name in which image is to be saved. Thereby implementing each functionality with voice. Coming to the editing functionalities we have implemented all the features that are essential for an editing tool. Features include brightness, Contrast, crop, rotate, a total of 9 filters etc., and all these using voice commands. "Elements" have an add on functionality of image compression. Image that we select for editing maybe of larger size and we can compress them after according to our requirement, compression ratio is on a scale of 0-100. The key feature that makes "Elements" unique from other editing tools is that it is voice enabled, as it is voice controlled it can be used by the "differently abled people". Voice commands are less complex than shortcuts and is has a user-friendly UI which all makes it easy to use. So now editing is no more a complex task just tell what to do and it’s done. 
 References 
